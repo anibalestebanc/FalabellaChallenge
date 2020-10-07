@@ -4,5 +4,5 @@ import com.falabella.domain.model.DataResponse
 import com.falabella.domain.model.EconomicIndicator
 
 interface EconomicIndicatorRepository {
-     fun getEconomicIndicatorList() : DataResponse<List<EconomicIndicator>>
+     suspend fun getEconomicIndicatorList() : DataResponse<List<EconomicIndicator>>
 }
