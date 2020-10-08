@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.falabella.domain.model.Serie
 import com.falabella.falabellachallenge.R
 
-class EconomicIndicatorSerieRecyclerViewAdapter (private val economicIndicatorSerieList : List<Serie>)
+class EconomicIndicatorSerieRecyclerViewAdapter
     : RecyclerView.Adapter<EconomicIndicatorSerieRecyclerViewAdapter.ViewHolder>() {
+
+    private var economicIndicatorSerieList : List<Serie> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_economic_indicator_serie, parent, false)
@@ -23,6 +25,10 @@ class EconomicIndicatorSerieRecyclerViewAdapter (private val economicIndicatorSe
     }
 
     override fun getItemCount(): Int = economicIndicatorSerieList.size
+    fun setEconomicIndicatorSerieList(serieList: List<Serie>) {
+        economicIndicatorSerieList = serieList
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val itemDate: TextView = view.findViewById(R.id.date_serie_item)

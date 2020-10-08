@@ -5,5 +5,5 @@ import com.falabella.domain.model.EconomicIndicator
 import com.falabella.domain.repository.EconomicIndicatorRepository
 
 class GetEconomicIndicatorListUseCase(private val repository: EconomicIndicatorRepository) {
-    suspend fun invoke() : DataResponse<List<EconomicIndicator>> = repository.getEconomicIndicatorList()
+    suspend fun invoke(forceRefresh : Boolean) : DataResponse<List<EconomicIndicator>> = repository.getEconomicIndicatorList(forceRefresh)
 }

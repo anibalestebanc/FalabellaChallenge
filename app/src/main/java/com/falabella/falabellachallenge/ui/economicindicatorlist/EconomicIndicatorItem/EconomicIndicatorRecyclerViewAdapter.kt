@@ -10,10 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.falabellachallenge.R
 
-class EconomicIndicatorRecyclerViewAdapter (private val listener : (EconomicIndicator) -> Unit,  val economicIndicatorList : List<EconomicIndicator>)
+class EconomicIndicatorRecyclerViewAdapter (private val listener : (EconomicIndicator) -> Unit)
     : RecyclerView.Adapter<EconomicIndicatorRecyclerViewAdapter.ViewHolder>(), Filterable {
 
-     var economicIndicatorFiltered : List<EconomicIndicator> = economicIndicatorList
+     var economicIndicators : List<EconomicIndicator> = emptyList()
+     var economicIndicatorFiltered : List<EconomicIndicator> = economicIndicators
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_economic_indicator, parent, false)
@@ -41,20 +42,25 @@ class EconomicIndicatorRecyclerViewAdapter (private val listener : (EconomicIndi
     override fun getFilter(): Filter = EconomicIndicatorFilter(this)
 
     fun sortedClear() {
-        economicIndicatorFiltered = economicIndicatorList;
+        economicIndicatorFiltered = economicIndicators;
         notifyDataSetChanged()
     }
 
     fun sortedByAsc() {
-        val sortedList = economicIndicatorList.sortedBy { it.name }
+        val sortedList = economicIndicators.sortedBy { it.name }
         economicIndicatorFiltered = sortedList
         notifyDataSetChanged()
     }
 
     fun sortedByDes() {
-        val sortedList = economicIndicatorList.sortedByDescending { it.name }
+        val sortedList = economicIndicators.sortedByDescending { it.name }
         economicIndicatorFiltered = sortedList
         notifyDataSetChanged()
     }
 
+    fun setEconomicIndicatorList(list: List<EconomicIndicator>) {
+        economicIndicators = list
+        economicIndicatorFiltered = economicIndicators
+        notifyDataSetChanged()
+    }
 }

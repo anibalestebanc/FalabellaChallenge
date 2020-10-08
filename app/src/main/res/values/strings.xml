@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Falabella Challenge</string>
     <string name="sorted_by">Sorted by</string>
+    <string name="connection_error">
+        ¡Somethings is wrong!\n
+        Please check your connection and try again.
+    </string>
+    <string name="default_error">
+        ¡Somethings is wrong!\n
+        Please try again.
+    </string>
 
     <array name="sorted_by_array">
         <item>None</item>

@@ -12,8 +12,8 @@ class EconomicIndicatorRepositoryImpl(
     private val remoteDataSource: EconomicIndicatorRemoteDataSource
 ): EconomicIndicatorRepository {
 
-    override suspend fun getEconomicIndicatorList(): DataResponse<List<EconomicIndicator>> {
-        if (localDataSource.isEconomicIndicatorListEmpty()){
+    override suspend fun getEconomicIndicatorList(forceRefresh : Boolean): DataResponse<List<EconomicIndicator>> {
+        if (forceRefresh || localDataSource.isEconomicIndicatorListEmpty()){
             val result =  remoteDataSource.getEconomicIndicatorList()
             if (result is DataResponse.Success)
                 localDataSource.saveEconomicIndicatorList(result.data)
@@ -22,9 +22,9 @@ class EconomicIndicatorRepositoryImpl(
         return DataResponse.Success(localDataSource.getEconomicIndicatorList())
     }
 
-    override suspend fun getEconomicIndicatorSerie(economicIndicatorCode: String): DataResponse<EconomicIndicatorDetail> {
+    override suspend fun getEconomicIndicatorSerie(economicIndicatorCode: String,forceRefresh : Boolean): DataResponse<EconomicIndicatorDetail> {
 
-        if (localDataSource.getEconomicIndicatorDetailIsEmpty(economicIndicatorCode)){
+        if (forceRefresh || localDataSource.getEconomicIndicatorDetailIsEmpty(economicIndicatorCode)){
             val result =  remoteDataSource.getEconomicIndicatorSerieList(economicIndicatorCode)
             if (result is DataResponse.Success)
                 localDataSource.saveEconomicIndicatorDetail(result.data)

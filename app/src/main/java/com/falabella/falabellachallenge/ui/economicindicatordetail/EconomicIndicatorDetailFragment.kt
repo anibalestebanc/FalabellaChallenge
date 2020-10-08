@@ -11,7 +11,10 @@ import com.falabella.domain.model.Serie
 import com.falabella.falabellachallenge.R
 import com.falabella.falabellachallenge.ui.common.BaseFragment
 import com.falabella.falabellachallenge.ui.economicindicatordetail.economicindicatorserieitem.EconomicIndicatorSerieRecyclerViewAdapter
+import kotlinx.android.synthetic.main.connection_error.*
+import kotlinx.android.synthetic.main.default_error.*
 import kotlinx.android.synthetic.main.fragment_economic_indicator_detail.*
+import kotlinx.android.synthetic.main.loading.*
 
 /**
  * Created by Anibal Cortez on 10/8/20.
@@ -19,9 +22,12 @@ import kotlinx.android.synthetic.main.fragment_economic_indicator_detail.*
 
 class EconomicIndicatorDetailFragment : BaseFragment() {
 
+    private val economicDetailAdapter = EconomicIndicatorSerieRecyclerViewAdapter()
     private val viewModel: EconomicIndicatorDetailViewModel by lazy {
         EconomicIndicatorDetailViewModel(appContainer().getEconomicIndicatorDetailUseCase())
     }
+
+    private var currentView : View? = null
 
     companion object {
         private const val ECONOMIC_INDICATOR_CODE = "ECONOMIC_INDICATOR_CODE"
@@ -41,22 +47,37 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_economic_indicator_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.model.observe(viewLifecycleOwner, Observer(::updateUi))
-
+        setUpEconomicIndicatorDetail()
+        setUpRecyclerView()
+        setUpSwuipeRefresh()
         share_frame_layout.setOnClickListener { shareEconomicIndicator() }
 
         viewModel.getEconomicIndicatorSerie(arguments!!.getString(ECONOMIC_INDICATOR_CODE)!!)
+    }
+
+    private fun setUpSwuipeRefresh() {
+        swipe_refresh_economic_indicator_detail.setOnRefreshListener {
+            viewModel.refreshEconomicIndicatorSerie(arguments!!.getString(ECONOMIC_INDICATOR_CODE)!!)
+        }
+    }
+
+    private fun setUpEconomicIndicatorDetail() {
+        item_name.text = arguments!!.getString(ECONOMIC_INDICATOR_NAME)
+        item_code.text = arguments!!.getString(ECONOMIC_INDICATOR_CODE)
+    }
+
+    private fun setUpRecyclerView() {
+        serie_recycler_view.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = economicDetailAdapter
+        }
     }
 
     private fun updateUi(model: EconomicIndicatorDetailViewModel.UiModel) {
@@ -65,42 +86,52 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
             is EconomicIndicatorDetailViewModel.UiModel.ConnectionError -> showConnectionError()
             is EconomicIndicatorDetailViewModel.UiModel.Loading -> showLoading(model.value)
             is EconomicIndicatorDetailViewModel.UiModel.Success -> showEconomicIndicatorDetail(model.list)
+            is EconomicIndicatorDetailViewModel.UiModel.Refresh -> showSwipeRefresh(model.value)
+        }
+    }
+
+    private fun showSwipeRefresh(value: Boolean) {
+        if(swipe_refresh_economic_indicator_detail.isRefreshing){
+            swipe_refresh_economic_indicator_detail.isRefreshing = false
         }
     }
 
     private fun shareEconomicIndicator() {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_TITLE, arguments!!.getString(ECONOMIC_INDICATOR_NAME))
-            putExtra(Intent.EXTRA_TEXT, arguments!!.getString(ECONOMIC_INDICATOR_VALUE))
+            putExtra(Intent.EXTRA_TITLE, arguments!!.getString(ECONOMIC_INDICATOR_VALUE))
             putExtra(Intent.EXTRA_TEXT, arguments!!.getString(ECONOMIC_INDICATOR_VALUE))
         }
         intent.resolveActivity(activity!!.packageManager)?.run {
             startActivity(intent)
         }
-
     }
 
     private fun showEconomicIndicatorDetail(serieList: List<Serie>) {
-        item_name.text = arguments!!.getString(ECONOMIC_INDICATOR_NAME)
-        item_code.text = arguments!!.getString(ECONOMIC_INDICATOR_CODE)
-        serie_recycler_view.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = EconomicIndicatorSerieRecyclerViewAdapter(serieList)
-        }
+        economicDetailAdapter.setEconomicIndicatorSerieList(serieList)
+        hideCurrentView()
+        economic_indicator_detail_content.visibility = View.VISIBLE
+        currentView = economic_indicator_detail_content
     }
 
     private fun showdefaultError() {
-        // TODO: 10/8/20
+        hideCurrentView()
+        default_error.visibility = View.VISIBLE
+        currentView = default_error
     }
 
     private fun showConnectionError() {
-        // TODO: 10/8/20
+        hideCurrentView()
+        connection_error.visibility = View.VISIBLE
+        currentView = connection_error
+    }
+
+    private fun hideCurrentView() {
+        currentView?.visibility = View.GONE
     }
 
     private fun showLoading(value: Boolean) {
-        progress_bar_view.visibility = if (value) View.VISIBLE else View.GONE
+        progress_bar_loading.visibility = if (value) View.VISIBLE else View.GONE
     }
-
 
 }

@@ -20,20 +20,34 @@ class EconomicIndicatorViewModel(private val getEconomicIndicatorUseCase: GetEco
     sealed class UiModel {
         object Error: UiModel()
         object ConnectionError : UiModel()
+        data class Refresh(val value: Boolean) : UiModel()
         data class Loading(val value: Boolean ) : UiModel()
         data class Success(val list: List<EconomicIndicator>) : UiModel()
     }
 
-    fun getEconomicIdicatorList(){
+    fun getEconomicIdicatorList(forceRefresh : Boolean = false){
         viewModelScope.launch{
             _model.value = UiModel.Loading(true)
-            val response = getEconomicIndicatorUseCase.invoke()
+
+           val response = getEconomicIndicatorUseCase.invoke(forceRefresh)
             when(response){
                 is DataResponse.Success -> _model.value = UiModel.Success(response.data)
                 is DataResponse.ServerError -> _model.value = UiModel.Error
                 is DataResponse.ConnectionError -> _model.value = UiModel.ConnectionError
             }
             _model.value = UiModel.Loading(false)
+        }
+    }
+
+    fun forceGetEconomicIdicatorList() {
+        viewModelScope.launch {
+            val response = getEconomicIndicatorUseCase.invoke(true)
+            when(response){
+                is DataResponse.Success -> _model.value = UiModel.Success(response.data)
+                is DataResponse.ServerError -> _model.value = UiModel.Error
+                is DataResponse.ConnectionError -> _model.value = UiModel.ConnectionError
+            }
+            _model.value = UiModel.Refresh(true)
         }
     }
 }
