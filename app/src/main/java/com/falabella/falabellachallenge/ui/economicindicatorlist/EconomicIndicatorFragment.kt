@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -23,6 +25,7 @@ import com.falabella.falabellachallenge.data.server.RetrofitClient
 import com.falabella.falabellachallenge.data.server.economicindicator.EconomicIndicatorRemoteDataSourceImpl
 import com.falabella.falabellachallenge.ui.economicindicatorlist.economicindicatoritem.EconomicIndicatorRecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_economic_indicator_list.*
+import java.lang.reflect.Array
 
 class EconomicIndicatorFragment : Fragment() {
 
@@ -51,7 +54,7 @@ class EconomicIndicatorFragment : Fragment() {
     }
 
     private fun onEconomicIndicatorClicked(economicIndicator : EconomicIndicator){
-        (activity as MainActivity).showEconomicIndicatorDetail(economicIndicator.code,economicIndicator.name)
+        (activity as MainActivity).showEconomicIndicatorDetail(economicIndicator.code,economicIndicator.name, economicIndicator.value)
     }
 
     private fun showEconomicIndicatorList(list: List<EconomicIndicator>) {
@@ -71,6 +74,28 @@ class EconomicIndicatorFragment : Fragment() {
                return false
             }
         })
+
+        val sortedlist  = resources.getStringArray(R.array.sorted_by_array)
+        val spinnerAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortedlist)
+        spinner_sorted_by.adapter = spinnerAdapter
+        spinner_sorted_by.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val sertedValue = sortedlist.get(position)
+                when(sertedValue){
+                     "None" -> economicIndicatorAdapter.sortedClear()
+                    "Asc" ->economicIndicatorAdapter.sortedByAsc()
+                    "Des"-> economicIndicatorAdapter.sortedByDes()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                economicIndicatorAdapter.sortedClear()
+            }
+
+        }
+
+
+
     }
 
     private fun showDefaultError() {

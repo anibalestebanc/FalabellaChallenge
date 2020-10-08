@@ -20,10 +20,10 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    fun showEconomicIndicatorDetail( code: String, name : String){
+    fun showEconomicIndicatorDetail( code: String, name : String, value: String){
         val fragmentManager  = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = EconomicIndicatorDetailFragment.newInstance(code, name)
+        val fragment = EconomicIndicatorDetailFragment.newInstance(code, name, value)
         fragmentTransaction.replace(R.id.main_container, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()

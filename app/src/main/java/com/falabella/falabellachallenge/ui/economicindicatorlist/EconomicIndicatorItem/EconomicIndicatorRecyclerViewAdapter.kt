@@ -40,4 +40,21 @@ class EconomicIndicatorRecyclerViewAdapter (private val listener : (EconomicIndi
 
     override fun getFilter(): Filter = EconomicIndicatorFilter(this)
 
+    fun sortedClear() {
+        economicIndicatorFiltered = economicIndicatorList;
+        notifyDataSetChanged()
+    }
+
+    fun sortedByAsc() {
+        val sortedList = economicIndicatorList.sortedBy { it.name }
+        economicIndicatorFiltered = sortedList
+        notifyDataSetChanged()
+    }
+
+    fun sortedByDes() {
+        val sortedList = economicIndicatorList.sortedByDescending { it.name }
+        economicIndicatorFiltered = sortedList
+        notifyDataSetChanged()
+    }
+
 }
