@@ -14,15 +14,15 @@ class EconomicIndicatorFilter(private val adapter: EconomicIndicatorRecyclerView
         val filterResults = FilterResults()
 
         if (constraint.isNullOrEmpty()) {
-            filterResults.count = adapter.economicIndicatorList.size
-            filterResults.values = adapter.economicIndicatorList
+            filterResults.count = adapter.economicIndicators.size
+            filterResults.values = adapter.economicIndicators
             return filterResults
         }
 
         val charSearch = constraint.toString().toLowerCase()
         val filteredList = mutableListOf<EconomicIndicator>()
 
-        for (indicator: EconomicIndicator in adapter.economicIndicatorList) {
+        for (indicator: EconomicIndicator in adapter.economicIndicators) {
             val code = indicator.code.toLowerCase()
             val name = indicator.name.toLowerCase()
             if (code.contains(charSearch) || name.contains(charSearch))
