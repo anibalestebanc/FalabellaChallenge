@@ -1,11 +1,13 @@
-package com.falabella.falabellachallenge
+package com.falabella.falabellachallenge.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.falabella.falabellachallenge.R
+import com.falabella.falabellachallenge.ui.common.BaseActivity
 import com.falabella.falabellachallenge.ui.economicindicatordetail.EconomicIndicatorDetailFragment
 import com.falabella.falabellachallenge.ui.economicindicatorlist.EconomicIndicatorFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
