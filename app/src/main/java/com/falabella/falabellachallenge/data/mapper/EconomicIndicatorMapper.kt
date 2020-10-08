@@ -1,6 +1,7 @@
 package com.falabella.falabellachallenge.data.mapper
 
 import com.falabella.domain.model.EconomicIndicator
+import com.falabella.falabellachallenge.data.database.economicindicator.EconomicIndicator as EconomicIndicatorRoom
 import com.falabella.falabellachallenge.data.server.economicindicator.Bitcoin as BitcoinSchema
 import com.falabella.falabellachallenge.data.server.economicindicator.EconomicIndicatorSchema
 import com.falabella.falabellachallenge.data.server.economicindicator.Tasa_desempleo as TasaDesempleoSchema
@@ -14,6 +15,23 @@ import com.falabella.falabellachallenge.data.server.economicindicator.Dolar_inte
 import com.falabella.falabellachallenge.data.server.economicindicator.Dolar as DolarSchema
 import com.falabella.falabellachallenge.data.server.economicindicator.Ivp as IvpSchema
 import com.falabella.falabellachallenge.data.server.economicindicator.Uf as UfSchema
+
+
+fun EconomicIndicatorRoom.toDomain() : EconomicIndicator = EconomicIndicator(
+    code = code,
+    name = name,
+    unitOfMeasure = unitOfMeasure,
+    date = date,
+    value = value
+)
+
+fun  EconomicIndicator.toRoom() : EconomicIndicatorRoom = EconomicIndicatorRoom(
+    code = code,
+    name = name,
+    unitOfMeasure = unitOfMeasure,
+    date = date,
+    value = value
+)
 
 
 fun EconomicIndicatorSchema.toEconomicIndicatorList(): List<EconomicIndicator> =

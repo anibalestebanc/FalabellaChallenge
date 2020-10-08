@@ -15,13 +15,10 @@ class EconomicIndicatorRepositoryImpl(
     override suspend fun getEconomicIndicatorList(): DataResponse<List<EconomicIndicator>> {
         if (localDataSource.isEconomicIndicatorListEmpty()){
             val result =  remoteDataSource.getEconomicIndicatorList()
-            if (result is DataResponse.Success){
+            if (result is DataResponse.Success)
                 localDataSource.saveEconomicIndicatorList(result.data)
-                return result
-            }else{
-                return result
-            }
+            else return result
         }
-        return localDataSource.getEconomicIndicatorList()
+        return DataResponse.Success(localDataSource.getEconomicIndicatorList())
     }
 }
