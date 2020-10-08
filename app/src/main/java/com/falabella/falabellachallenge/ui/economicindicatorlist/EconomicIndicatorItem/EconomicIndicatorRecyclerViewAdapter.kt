@@ -1,4 +1,4 @@
-package com.falabella.falabellachallenge.ui.economicindicatorlist.EconomicIndicatorItem
+package com.falabella.falabellachallenge.ui.economicindicatorlist.economicindicatoritem
 
 import android.view.LayoutInflater
 import android.view.View

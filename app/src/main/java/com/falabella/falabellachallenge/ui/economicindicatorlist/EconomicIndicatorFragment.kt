@@ -14,13 +14,14 @@ import com.falabella.data.source.EconomicIndicatorLocalDataSource
 import com.falabella.data.source.EconomicIndicatorRemoteDataSource
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.domain.usecase.GetEconomicIndicatorListUseCase
+import com.falabella.falabellachallenge.MainActivity
 import com.falabella.falabellachallenge.R
 import com.falabella.falabellachallenge.common.ConnectionHelper
 import com.falabella.falabellachallenge.data.database.LocalDatabase
 import com.falabella.falabellachallenge.data.database.economicindicator.EconomicIndicatorLocalDataSourceImpl
 import com.falabella.falabellachallenge.data.server.RetrofitClient
 import com.falabella.falabellachallenge.data.server.economicindicator.EconomicIndicatorRemoteDataSourceImpl
-import com.falabella.falabellachallenge.ui.economicindicatorlist.EconomicIndicatorItem.EconomicIndicatorRecyclerViewAdapter
+import com.falabella.falabellachallenge.ui.economicindicatorlist.economicindicatoritem.EconomicIndicatorRecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_economic_indicator_list.*
 
 class EconomicIndicatorFragment : Fragment() {
@@ -49,8 +50,8 @@ class EconomicIndicatorFragment : Fragment() {
         }
     }
 
-    private fun onEconomicIndicatorClicked(item : EconomicIndicator){
-        //navigate to detail
+    private fun onEconomicIndicatorClicked(economicIndicator : EconomicIndicator){
+        (activity as MainActivity).showEconomicIndicatorDetail(economicIndicator.code,economicIndicator.name)
     }
 
     private fun showEconomicIndicatorList(list: List<EconomicIndicator>) {
