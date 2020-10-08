@@ -8,10 +8,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ShowEconomicIndicatorList()
+        showEconomicIndicatorList()
     }
 
-    private fun ShowEconomicIndicatorList(){
+    private fun showEconomicIndicatorList(){
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragment = EconomicIndicatorFragment()

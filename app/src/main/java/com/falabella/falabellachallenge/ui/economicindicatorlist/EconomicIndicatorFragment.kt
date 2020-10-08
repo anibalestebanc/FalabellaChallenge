@@ -8,9 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.falabella.data.repository.EconomicIndicatorRepositoryImpl
+import com.falabella.data.source.EconomicIndicatorLocalDataSource
+import com.falabella.data.source.EconomicIndicatorRemoteDataSource
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.domain.usecase.GetEconomicIndicatorListUseCase
 import com.falabella.falabellachallenge.R
+import com.falabella.falabellachallenge.common.ConnectionHelper
+import com.falabella.falabellachallenge.data.database.EconomicIndicatorLocalDataSourceImpl
+import com.falabella.falabellachallenge.data.server.RetrofitClient
+import com.falabella.falabellachallenge.data.server.economicindicator.EconomicIndicatorRemoteDataSourceImpl
 import com.falabella.falabellachallenge.ui.economicindicatorlist.EconomicIndicatorItem.EconomicIndicatorRecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_economic_indicator_list.*
 
@@ -63,6 +69,11 @@ class EconomicIndicatorFragment : Fragment() {
     }
 
     private fun GetEconomicIndicatorViewModel() : EconomicIndicatorViewModel {
+        val economicIndicatorService = RetrofitClient.economicIndicatorService
+        val connectionHelper = ConnectionHelper(context!!)
+        val localDataSource : EconomicIndicatorLocalDataSource = EconomicIndicatorLocalDataSourceImpl();
+        val remoteDataSource : EconomicIndicatorRemoteDataSource = EconomicIndicatorRemoteDataSourceImpl(
+            connectionHelper, economicIndicatorService);
         val repository = EconomicIndicatorRepositoryImpl(localDataSource, remoteDataSource)
         val getEconomicIndicatorUseCase = GetEconomicIndicatorListUseCase(repository)
         return EconomicIndicatorViewModel(getEconomicIndicatorUseCase)

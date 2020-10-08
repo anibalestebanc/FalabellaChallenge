@@ -17,36 +17,11 @@ class EconomicIndicatorRepositoryImpl(
             val result =  remoteDataSource.getEconomicIndicatorList()
             if (result is DataResponse.Success){
                 localDataSource.saveEconomicIndicatorList(result.data)
+                return result
             }else{
                 return result
             }
         }
         return localDataSource.getEconomicIndicatorList()
-
-        /*Thread.sleep(5000)
-
-        val economicIndicator1 = EconomicIndicator(
-            "ipc",
-            "Indice de Precios al Consumidor (IPC)",
-            "Porcentaje",
-            "2020-08-01T04:00:00.000Z",
-            "0.1"
-        )
-        val economicIndicator2 = EconomicIndicator(
-            "utm",
-            "Unidad Tributaria Mensual (UTM)",
-            "Pesos",
-            "2020-10-01T03:00:00.000Z",
-            "50372"
-        )
-        val economicIndicator3 = EconomicIndicator(
-            "imacec",
-            "Imacec",
-            "Porcentaje",
-            "2020-08-01T04:00:00.000Z",
-            "-11.3"
-        )
-        val economicIndicatorList = listOf(economicIndicator1, economicIndicator2, economicIndicator3)
-        return DataResponse.Success(economicIndicatorList) */
     }
 }
