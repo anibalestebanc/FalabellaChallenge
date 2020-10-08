@@ -5,21 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
-import com.falabella.data.repository.EconomicIndicatorRepositoryImpl
-import com.falabella.data.source.EconomicIndicatorLocalDataSource
-import com.falabella.data.source.EconomicIndicatorRemoteDataSource
 import com.falabella.domain.model.Serie
-import com.falabella.domain.usecase.GetEconomicIndicatorDetailUseCase
 import com.falabella.falabellachallenge.R
-import com.falabella.falabellachallenge.common.ConnectionHelper
-import com.falabella.falabellachallenge.data.database.LocalDatabase
-import com.falabella.falabellachallenge.data.database.economicindicator.EconomicIndicatorLocalDataSourceImpl
-import com.falabella.falabellachallenge.data.server.RetrofitClient
-import com.falabella.falabellachallenge.data.server.economicindicator.EconomicIndicatorRemoteDataSourceImpl
+import com.falabella.falabellachallenge.ui.common.BaseFragment
 import com.falabella.falabellachallenge.ui.economicindicatordetail.economicindicatorserieitem.EconomicIndicatorSerieRecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_economic_indicator_detail.*
 
@@ -27,9 +17,11 @@ import kotlinx.android.synthetic.main.fragment_economic_indicator_detail.*
  * Created by Anibal Cortez on 10/8/20.
  */
 
-class EconomicIndicatorDetailFragment : Fragment() {
+class EconomicIndicatorDetailFragment : BaseFragment() {
 
-    private val viewModel: EconomicIndicatorDetailViewModel by lazy { getEconomicIndicatorDetailViewModel() }
+    private val viewModel: EconomicIndicatorDetailViewModel by lazy {
+        EconomicIndicatorDetailViewModel(appContainer().getEconomicIndicatorDetailUseCase())
+    }
 
     companion object {
         private const val ECONOMIC_INDICATOR_CODE = "ECONOMIC_INDICATOR_CODE"
@@ -110,25 +102,5 @@ class EconomicIndicatorDetailFragment : Fragment() {
         progress_bar_view.visibility = if (value) View.VISIBLE else View.GONE
     }
 
-    private fun getEconomicIndicatorDetailViewModel(): EconomicIndicatorDetailViewModel {
-        val localDataBase = Room.databaseBuilder(
-            activity!!.applicationContext,
-            LocalDatabase::class.java, "falabella-db"
-        ).build()
-
-        val economicIndicatorService = RetrofitClient.economicIndicatorService
-        val connectionHelper = ConnectionHelper(context!!)
-        val localDataSource: EconomicIndicatorLocalDataSource =
-            EconomicIndicatorLocalDataSourceImpl(
-                localDataBase
-            );
-        val remoteDataSource: EconomicIndicatorRemoteDataSource =
-            EconomicIndicatorRemoteDataSourceImpl(
-                connectionHelper, economicIndicatorService
-            );
-        val repository = EconomicIndicatorRepositoryImpl(localDataSource, remoteDataSource)
-        val economicIndicatorDetailUseCase = GetEconomicIndicatorDetailUseCase(repository)
-        return EconomicIndicatorDetailViewModel(economicIndicatorDetailUseCase)
-    }
 
 }
