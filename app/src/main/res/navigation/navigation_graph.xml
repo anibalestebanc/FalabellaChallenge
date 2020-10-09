@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/economicIndicatorFragment">
+
+    <fragment
+        android:id="@+id/economicIndicatorFragment"
+        android:name="com.falabella.falabellachallenge.ui.economicindicatorlist.EconomicIndicatorFragment"
+        android:label="@string/economic_indicator"
+        tools:layout="@layout/fragment_economic_indicator_list">
+        <action
+            android:id="@+id/action_to_DetailFragment"
+            app:destination="@id/economicIndicatorDetailFragment"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/economicIndicatorDetailFragment"
+        android:name="com.falabella.falabellachallenge.ui.economicindicatordetail.EconomicIndicatorDetailFragment"
+        android:label="@string/economic_indicator_detail"
+        tools:layout="@layout/fragment_economic_indicator_detail">
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <argument
+            android:name="code"
+            app:argType="string" />
+        <argument
+            android:name="value"
+            app:argType="string" />
+    </fragment>
+
+</navigation>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.falabella.domain.model.Serie
 import com.falabella.falabellachallenge.R
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.connection_error.*
 import kotlinx.android.synthetic.main.default_error.*
 import kotlinx.android.synthetic.main.fragment_economic_indicator_detail.*
 import kotlinx.android.synthetic.main.loading.*
+import java.lang.IllegalArgumentException
 
 /**
  * Created by Anibal Cortez on 10/8/20.
@@ -23,28 +25,13 @@ import kotlinx.android.synthetic.main.loading.*
 class EconomicIndicatorDetailFragment : BaseFragment() {
 
     private val economicDetailAdapter = EconomicIndicatorSerieRecyclerViewAdapter()
+    private val args: EconomicIndicatorDetailFragmentArgs by navArgs()
+    private val  economicIndicatorCode : String by lazy { args.code }
+    private val  economicIndicatorName : String by lazy { args.name }
+    private val economicIndicatorValue : String by lazy { args.value }
+    private var currentView : View? = null
     private val viewModel: EconomicIndicatorDetailViewModel by lazy {
         EconomicIndicatorDetailViewModel(appContainer().getEconomicIndicatorDetailUseCase())
-    }
-
-    private var currentView : View? = null
-
-    companion object {
-        private const val ECONOMIC_INDICATOR_CODE = "ECONOMIC_INDICATOR_CODE"
-        private const val ECONOMIC_INDICATOR_NAME = "ECONOMIC_INDICATOR_NAME"
-        private const val ECONOMIC_INDICATOR_VALUE = "ECONOMIC_INDICATOR_VALUE"
-        fun newInstance(
-            code: String,
-            name: String,
-            value: String
-        ): EconomicIndicatorDetailFragment {
-            val bundle = Bundle().apply {
-                putString(ECONOMIC_INDICATOR_CODE, code)
-                putString(ECONOMIC_INDICATOR_NAME, name)
-                putString(ECONOMIC_INDICATOR_VALUE, value)
-            }
-            return EconomicIndicatorDetailFragment().apply { arguments = bundle }
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,21 +43,21 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
         viewModel.model.observe(viewLifecycleOwner, Observer(::updateUi))
         setUpEconomicIndicatorDetail()
         setUpRecyclerView()
-        setUpSwuipeRefresh()
+        setUpSwipeRefresh()
         share_frame_layout.setOnClickListener { shareEconomicIndicator() }
-
-        viewModel.getEconomicIndicatorSerie(arguments!!.getString(ECONOMIC_INDICATOR_CODE)!!)
+        viewModel.getEconomicIndicatorSerie(economicIndicatorCode)
     }
 
-    private fun setUpSwuipeRefresh() {
+
+    private fun setUpSwipeRefresh() {
         swipe_refresh_economic_indicator_detail.setOnRefreshListener {
-            viewModel.refreshEconomicIndicatorSerie(arguments!!.getString(ECONOMIC_INDICATOR_CODE)!!)
+            viewModel.refreshEconomicIndicatorSerie(economicIndicatorCode)
         }
     }
 
     private fun setUpEconomicIndicatorDetail() {
-        item_name.text = arguments!!.getString(ECONOMIC_INDICATOR_NAME)
-        item_code.text = arguments!!.getString(ECONOMIC_INDICATOR_CODE)
+        item_name.text = economicIndicatorName
+        item_code.text = economicIndicatorCode
     }
 
     private fun setUpRecyclerView() {
@@ -99,10 +86,10 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
     private fun shareEconomicIndicator() {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_TITLE, arguments!!.getString(ECONOMIC_INDICATOR_VALUE))
-            putExtra(Intent.EXTRA_TEXT, arguments!!.getString(ECONOMIC_INDICATOR_VALUE))
+            putExtra(Intent.EXTRA_TITLE, economicIndicatorName )
+            putExtra(Intent.EXTRA_TEXT, economicIndicatorValue)
         }
-        intent.resolveActivity(activity!!.packageManager)?.run {
+        intent.resolveActivity(requireActivity().packageManager)?.run {
             startActivity(intent)
         }
     }

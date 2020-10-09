@@ -8,9 +8,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.falabella.domain.model.EconomicIndicator
-import com.falabella.falabellachallenge.ui.MainActivity
 import com.falabella.falabellachallenge.R
 import com.falabella.falabellachallenge.ui.common.BaseFragment
 import com.falabella.falabellachallenge.ui.economicindicatorlist.economicindicatoritem.EconomicIndicatorRecyclerViewAdapter
@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.connection_error.*
 import kotlinx.android.synthetic.main.default_error.*
 import kotlinx.android.synthetic.main.fragment_economic_indicator_list.*
 import kotlinx.android.synthetic.main.loading.*
-
 
 class EconomicIndicatorFragment : BaseFragment() {
 
@@ -35,6 +34,8 @@ class EconomicIndicatorFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.model.observe(viewLifecycleOwner, Observer(::updateUi))
+
+
         setUpRecyclerView()
         setUpSearchView()
         setUpSpinnerSortedBy()
@@ -50,7 +51,7 @@ class EconomicIndicatorFragment : BaseFragment() {
 
     private fun setUpSpinnerSortedBy() {
         val sortedlist  = resources.getStringArray(R.array.sorted_by_array)
-        val spinnerAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, sortedlist)
+        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, sortedlist)
         spinner_sorted_by.adapter = spinnerAdapter
 
         spinner_sorted_by.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -108,7 +109,11 @@ class EconomicIndicatorFragment : BaseFragment() {
     }
 
     private fun onEconomicIndicatorClicked(economicIndicator : EconomicIndicator){
-        (activity as MainActivity).showEconomicIndicatorDetail(economicIndicator.code,economicIndicator.name, economicIndicator.value)
+        val action = EconomicIndicatorFragmentDirections.actionToDetailFragment(
+            economicIndicator.name,economicIndicator.code,economicIndicator.value
+        )
+
+        findNavController().navigate(action)
     }
 
     private fun showEconomicIndicatorList(economicIndicatorList: List<EconomicIndicator>) {
@@ -137,7 +142,6 @@ class EconomicIndicatorFragment : BaseFragment() {
     private fun showLoading(value: Boolean) {
         progress_bar_loading.visibility = if (value) View.VISIBLE else View.GONE
     }
-
 }
 
 
