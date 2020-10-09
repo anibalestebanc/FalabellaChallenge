@@ -15,4 +15,8 @@
         <item>Asc</item>
         <item>Des</item>
     </array>
+
+    <string name="economic_indicator">Economic Indicator</string>
+    <string name="economic_indicator_detail">Economic Indicator Detail</string>
+
 </resources>
