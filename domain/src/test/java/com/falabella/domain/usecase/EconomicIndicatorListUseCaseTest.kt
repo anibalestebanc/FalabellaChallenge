@@ -17,11 +17,9 @@ class EconomicIndicatorListUseCaseTest {
     fun `EconomicIndicatorList use case call to repository`(){
 
         runBlocking{
-            economicIndicatorUseCase.invoke()
+            economicIndicatorUseCase.invoke(false)
 
-            verify(repository).getEconomicIndicatorList()
+            verify(repository).getEconomicIndicatorList(false)
         }
-
-
     }
 }

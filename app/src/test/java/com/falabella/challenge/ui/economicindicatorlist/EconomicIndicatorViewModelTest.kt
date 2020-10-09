@@ -33,9 +33,10 @@ class EconomicIndicatorViewModelTest{
     @Test
     fun `EconomicIndicator called usecase when GetEconomicIdicatorList is call`(){
         runBlocking {
+            val forceRefresh = false
             viewModel.getEconomicIdicatorList()
 
-            verify(getEconomicIndicatorUseCase, times(1)).invoke()
+            verify(getEconomicIndicatorUseCase, times(1)).invoke(forceRefresh)
         }
     }
 
@@ -43,9 +44,10 @@ class EconomicIndicatorViewModelTest{
     fun `EconomicIndicator set emptyList when use case return empty list`(){
 
         runBlocking {
+            val forceRefresh = false
             val emptyList : DataResponse<List<EconomicIndicator>> = DataResponse.Success(emptyList())
 
-            whenever(getEconomicIndicatorUseCase.invoke()).thenReturn(emptyList)
+            whenever(getEconomicIndicatorUseCase.invoke(forceRefresh)).thenReturn(emptyList)
 
             viewModel.model.observeForever(observer)
 
@@ -60,6 +62,7 @@ class EconomicIndicatorViewModelTest{
     fun `EconomicIndicator set data when use case return a list`()
     {
         runBlocking {
+            val forceRefresh = false
             val utm = EconomicIndicator(
                 "utm",
                 "Unidad Tributaria Mensual (UTM)",
@@ -71,7 +74,7 @@ class EconomicIndicatorViewModelTest{
 
             val economicIndicatorResponse = DataResponse.Success(economicIndicatorList)
 
-            whenever(getEconomicIndicatorUseCase.invoke()).thenReturn(economicIndicatorResponse)
+            whenever(getEconomicIndicatorUseCase.invoke(forceRefresh)).thenReturn(economicIndicatorResponse)
 
             viewModel.model.observeForever(observer)
 
@@ -87,17 +90,17 @@ class EconomicIndicatorViewModelTest{
     fun `EconomicIndicator set error when use case return a serverError`(){
 
         runBlocking {
+            val forceRefresh = false
             val serverError = 100
             val serverErrorResponse  = DataResponse.ServerError(serverError)
 
-            whenever(getEconomicIndicatorUseCase.invoke()).thenReturn(serverErrorResponse)
+            whenever(getEconomicIndicatorUseCase.invoke(forceRefresh)).thenReturn(serverErrorResponse)
 
             viewModel.model.observeForever(observer)
 
             viewModel.getEconomicIdicatorList()
 
             verify(observer).onChanged(EconomicIndicatorViewModel.UiModel.Error)
-
         }
 
     }
@@ -108,7 +111,6 @@ class EconomicIndicatorViewModelTest{
         runBlocking {
             viewModel.model.observeForever(observer)
             viewModel.getEconomicIdicatorList()
-
             verify(observer).onChanged(EconomicIndicatorViewModel.UiModel.Loading(true))
 
         }
