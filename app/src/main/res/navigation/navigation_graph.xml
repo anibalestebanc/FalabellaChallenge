@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/economicIndicatorFragment"
-        android:name="com.falabella.falabellachallenge.ui.economicindicatorlist.EconomicIndicatorFragment"
+        android:name="com.falabella.challenge.ui.economicindicatorlist.EconomicIndicatorFragment"
         android:label="@string/economic_indicator"
         tools:layout="@layout/fragment_economic_indicator_list">
         <action
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/economicIndicatorDetailFragment"
-        android:name="com.falabella.falabellachallenge.ui.economicindicatordetail.EconomicIndicatorDetailFragment"
+        android:name="com.falabella.challenge.ui.economicindicatordetail.EconomicIndicatorDetailFragment"
         android:label="@string/economic_indicator_detail"
         tools:layout="@layout/fragment_economic_indicator_detail">
         <argument
