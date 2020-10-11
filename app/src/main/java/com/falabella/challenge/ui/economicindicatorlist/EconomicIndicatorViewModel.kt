@@ -28,14 +28,12 @@ class EconomicIndicatorViewModel(private val getEconomicIndicatorUseCase: GetEco
     fun getEconomicIdicatorList(forceRefresh : Boolean = false){
         viewModelScope.launch{
             _model.value = UiModel.Loading(true)
-
            val response = getEconomicIndicatorUseCase.invoke(forceRefresh)
             when(response){
                 is DataResponse.Success -> _model.value = UiModel.Success(response.data)
                 is DataResponse.ServerError -> _model.value = UiModel.Error
                 is DataResponse.ConnectionError -> _model.value = UiModel.ConnectionError
             }
-            _model.value = UiModel.Loading(false)
         }
     }
 
