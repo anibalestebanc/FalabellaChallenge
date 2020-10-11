@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.falabella.domain.model.DataResponse
 import com.falabella.domain.model.Serie
 import com.falabella.domain.usecase.GetEconomicIndicatorDetailUseCase
 import kotlinx.coroutines.launch
+import com.falabella.domain.model.Result
 
 class EconomicIndicatorDetailViewModel(private val economicIndicatorDetailUseCase: GetEconomicIndicatorDetailUseCase)
     : ViewModel(){
@@ -26,26 +26,24 @@ class EconomicIndicatorDetailViewModel(private val economicIndicatorDetailUseCas
         data class Success(val list: List<Serie>) : UiModel()
     }
 
-    fun getEconomicIndicatorSerie(economicIndicatorCode: String, forceRefresh : Boolean = false){
+    fun getEconomicIndicatorDetail(economicIndicatorCode: String, forceRefresh : Boolean = false){
         viewModelScope.launch {
             _model.value = UiModel.Loading(true)
-           val result= economicIndicatorDetailUseCase.invoke(economicIndicatorCode, forceRefresh)
-            when(result){
-                is DataResponse.ConnectionError -> _model.value = UiModel.ConnectionError
-                is DataResponse.ServerError -> _model.value = UiModel.Error
-                is DataResponse.Success -> _model.value = UiModel.Success(result.data.serieList)
+            when(val result= economicIndicatorDetailUseCase.invoke(economicIndicatorCode, forceRefresh)){
+                is Result.ConnectionError -> _model.value = UiModel.ConnectionError
+                is Result.ServerError -> _model.value = UiModel.Error
+                is Result.Success -> _model.value = UiModel.Success(result.data.serieList)
             }
-            _model.value = UiModel.Loading(false)
+
         }
     }
 
-    fun refreshEconomicIndicatorSerie(economicIndicatorCode: String,) {
+    fun refreshEconomicIndicatorDetail(economicIndicatorCode: String,) {
         viewModelScope.launch {
-            val result= economicIndicatorDetailUseCase.invoke(economicIndicatorCode, true)
-            when(result){
-                is DataResponse.ConnectionError -> _model.value = UiModel.ConnectionError
-                is DataResponse.ServerError -> _model.value = UiModel.Error
-                is DataResponse.Success -> _model.value = UiModel.Success(result.data.serieList)
+            when(val result= economicIndicatorDetailUseCase.invoke(economicIndicatorCode, true)){
+                is Result.ConnectionError -> _model.value = UiModel.ConnectionError
+                is Result.ServerError -> _model.value = UiModel.Error
+                is Result.Success -> _model.value = UiModel.Success(result.data.serieList)
             }
             _model.value = UiModel.Refresh(false)
         }

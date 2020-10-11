@@ -2,7 +2,7 @@ package com.falabella.data.repository
 
 import com.falabella.data.source.EconomicIndicatorLocalDataSource
 import com.falabella.data.source.EconomicIndicatorRemoteDataSource
-import com.falabella.domain.model.DataResponse
+import com.falabella.domain.model.Result
 import com.falabella.domain.model.EconomicIndicator
 import com.nhaarman.mockitokotlin2.*
 import junit.framework.Assert.assertEquals
@@ -40,7 +40,7 @@ class EconomicIndicatorRepositoryImplTest {
             val serverError = 500
             whenever(localDataSource.isEconomicIndicatorListEmpty()).thenReturn(true)
             whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(
-                DataResponse.ServerError(
+                Result.ServerError(
                     serverError
                 )
             )
@@ -56,7 +56,7 @@ class EconomicIndicatorRepositoryImplTest {
         runBlocking {
             val forceRefresh = false
             whenever(localDataSource.isEconomicIndicatorListEmpty()).thenReturn(true)
-            whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(DataResponse.ConnectionError)
+            whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(Result.ConnectionError)
 
             repository.getEconomicIndicatorList(forceRefresh)
 
@@ -79,12 +79,12 @@ class EconomicIndicatorRepositoryImplTest {
             val economicIndicatorList: List<EconomicIndicator> = listOf(economicIndicator)
 
             whenever(localDataSource.isEconomicIndicatorListEmpty()).thenReturn(true)
-            whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(DataResponse.Success(economicIndicatorList))
+            whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(Result.Success(economicIndicatorList))
             whenever(localDataSource.getEconomicIndicatorList()).thenReturn(economicIndicatorList)
 
             val result = repository.getEconomicIndicatorList(forceRefresh)
 
-            assertEquals(DataResponse.Success(economicIndicatorList), result)
+            assertEquals(Result.Success(economicIndicatorList), result)
         }
 
     }
@@ -95,9 +95,9 @@ class EconomicIndicatorRepositoryImplTest {
         runBlocking {
             val forceRefresh = false
             val serverError = 500
-            val expectedResult = DataResponse.ServerError(serverError)
+            val expectedResult = Result.ServerError(serverError)
             whenever(localDataSource.isEconomicIndicatorListEmpty()).thenReturn(true)
-            whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(DataResponse.ServerError(serverError))
+            whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(Result.ServerError(serverError))
 
             val result = repository.getEconomicIndicatorList(forceRefresh)
 

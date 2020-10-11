@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.falabella.domain.model.DataResponse
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.domain.usecase.GetEconomicIndicatorListUseCase
 import kotlinx.coroutines.launch
+import com.falabella.domain.model.Result
 
 class EconomicIndicatorViewModel(private val getEconomicIndicatorUseCase: GetEconomicIndicatorListUseCase)
     : ViewModel(){
@@ -28,22 +28,20 @@ class EconomicIndicatorViewModel(private val getEconomicIndicatorUseCase: GetEco
     fun getEconomicIdicatorList(forceRefresh : Boolean = false){
         viewModelScope.launch{
             _model.value = UiModel.Loading(true)
-           val response = getEconomicIndicatorUseCase.invoke(forceRefresh)
-            when(response){
-                is DataResponse.Success -> _model.value = UiModel.Success(response.data)
-                is DataResponse.ServerError -> _model.value = UiModel.Error
-                is DataResponse.ConnectionError -> _model.value = UiModel.ConnectionError
+            when(val result = getEconomicIndicatorUseCase.invoke(forceRefresh)){
+                is Result.Success -> _model.value = UiModel.Success(result.data)
+                is Result.ServerError -> _model.value = UiModel.Error
+                is Result.ConnectionError -> _model.value = UiModel.ConnectionError
             }
         }
     }
 
     fun forceGetEconomicIdicatorList() {
         viewModelScope.launch {
-            val response = getEconomicIndicatorUseCase.invoke(true)
-            when(response){
-                is DataResponse.Success -> _model.value = UiModel.Success(response.data)
-                is DataResponse.ServerError -> _model.value = UiModel.Error
-                is DataResponse.ConnectionError -> _model.value = UiModel.ConnectionError
+            when(val result = getEconomicIndicatorUseCase.invoke(true)){
+                is Result.Success -> _model.value = UiModel.Success(result.data)
+                is Result.ServerError -> _model.value = UiModel.Error
+                is Result.ConnectionError -> _model.value = UiModel.ConnectionError
             }
             _model.value = UiModel.Refresh(true)
         }

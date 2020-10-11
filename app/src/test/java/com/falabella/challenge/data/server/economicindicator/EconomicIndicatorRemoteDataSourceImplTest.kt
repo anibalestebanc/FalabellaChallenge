@@ -1,6 +1,6 @@
 package com.falabella.challenge.data.server.economicindicator
 
-import com.falabella.domain.model.DataResponse
+import com.falabella.domain.model.Result
 import com.falabella.challenge.common.ConnectionHelper
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -20,7 +20,7 @@ class EconomicIndicatorRemoteDataSourceImplTest {
     @Test
     fun `Should be return connection error when the device doesn't have connection`() {
         runBlocking {
-            val expectedResponse = DataResponse.ConnectionError
+            val expectedResponse = Result.ConnectionError
             whenever(connectionHelper.isConnected()).thenReturn(false)
 
             val result = remoteDataSourceImpl.getEconomicIndicatorList()

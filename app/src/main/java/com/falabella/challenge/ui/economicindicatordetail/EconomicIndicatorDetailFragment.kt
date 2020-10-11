@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.falabella.domain.model.Serie
 import com.falabella.challenge.R
 import com.falabella.challenge.ui.common.BaseFragment
+import com.falabella.challenge.ui.common.ErrorViewHelper
 import com.falabella.challenge.ui.economicindicatordetail.economicindicatorserieitem.EconomicIndicatorSerieRecyclerViewAdapter
 import kotlinx.android.synthetic.main.connection_error.*
 import kotlinx.android.synthetic.main.default_error.*
@@ -28,10 +29,11 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
     private val  economicIndicatorCode : String by lazy { args.code }
     private val  economicIndicatorName : String by lazy { args.name }
     private val economicIndicatorValue : String by lazy { args.value }
-    private var currentView : View? = null
+    private val errorViewHelper: ErrorViewHelper by lazy { initErrorViewHelper() }
     private val viewModel: EconomicIndicatorDetailViewModel by lazy {
         EconomicIndicatorDetailViewModel(appContainer().getEconomicIndicatorDetailUseCase())
     }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_economic_indicator_detail, container, false)
@@ -44,13 +46,19 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
         setUpRecyclerView()
         setUpSwipeRefresh()
         share_frame_layout.setOnClickListener { shareEconomicIndicator() }
-        viewModel.getEconomicIndicatorSerie(economicIndicatorCode)
+        viewModel.getEconomicIndicatorDetail(economicIndicatorCode)
     }
 
+    private fun initErrorViewHelper() = ErrorViewHelper(
+        contentView = economic_indicator_detail_content,
+        errorView = default_error,
+        connectionView = connection_error,
+        loadingView = progress_bar_loading
+    )
 
     private fun setUpSwipeRefresh() {
         swipe_refresh_economic_indicator_detail.setOnRefreshListener {
-            viewModel.refreshEconomicIndicatorSerie(economicIndicatorCode)
+            viewModel.refreshEconomicIndicatorDetail(economicIndicatorCode)
         }
     }
 
@@ -68,9 +76,9 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
 
     private fun updateUi(model: EconomicIndicatorDetailViewModel.UiModel) {
         when (model) {
-            is EconomicIndicatorDetailViewModel.UiModel.Error -> showdefaultError()
-            is EconomicIndicatorDetailViewModel.UiModel.ConnectionError -> showConnectionError()
-            is EconomicIndicatorDetailViewModel.UiModel.Loading -> showLoading(model.value)
+            is EconomicIndicatorDetailViewModel.UiModel.Error -> errorViewHelper.showError()
+            is EconomicIndicatorDetailViewModel.UiModel.ConnectionError -> errorViewHelper.showConnection()
+            is EconomicIndicatorDetailViewModel.UiModel.Loading ->errorViewHelper.showLoading(model.value)
             is EconomicIndicatorDetailViewModel.UiModel.Success -> showEconomicIndicatorDetail(model.list)
             is EconomicIndicatorDetailViewModel.UiModel.Refresh -> showSwipeRefresh(model.value)
         }
@@ -95,29 +103,7 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
 
     private fun showEconomicIndicatorDetail(serieList: List<Serie>) {
         economicDetailAdapter.setEconomicIndicatorSerieList(serieList)
-        hideCurrentView()
-        economic_indicator_detail_content.visibility = View.VISIBLE
-        currentView = economic_indicator_detail_content
-    }
-
-    private fun showdefaultError() {
-        hideCurrentView()
-        default_error.visibility = View.VISIBLE
-        currentView = default_error
-    }
-
-    private fun showConnectionError() {
-        hideCurrentView()
-        connection_error.visibility = View.VISIBLE
-        currentView = connection_error
-    }
-
-    private fun hideCurrentView() {
-        currentView?.visibility = View.GONE
-    }
-
-    private fun showLoading(value: Boolean) {
-        progress_bar_loading.visibility = if (value) View.VISIBLE else View.GONE
+        errorViewHelper.showContent()
     }
 
 }
