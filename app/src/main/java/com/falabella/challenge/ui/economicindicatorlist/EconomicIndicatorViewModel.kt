@@ -4,31 +4,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.falabella.challenge.ui.common.BaseViewModel
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.domain.usecase.GetEconomicIndicatorListUseCase
 import kotlinx.coroutines.launch
 import com.falabella.domain.model.Result
+import kotlinx.coroutines.CoroutineDispatcher
 
-class EconomicIndicatorViewModel(private val getEconomicIndicatorUseCase: GetEconomicIndicatorListUseCase)
-    : ViewModel(){
+class EconomicIndicatorViewModel(
+    private val getEconomicIndicatorUseCase: GetEconomicIndicatorListUseCase,
+    uiDispatcher: CoroutineDispatcher
+) : BaseViewModel(uiDispatcher) {
 
     private val _model = MutableLiveData<UiModel>()
-    val model: LiveData<UiModel> get(){
-        return _model
-    }
+    val model: LiveData<UiModel>
+        get() {
+            return _model
+        }
 
     sealed class UiModel {
-        object Error: UiModel()
+        object Error : UiModel()
         object ConnectionError : UiModel()
         data class Refresh(val value: Boolean) : UiModel()
-        data class Loading(val value: Boolean ) : UiModel()
+        data class Loading(val value: Boolean) : UiModel()
         data class Success(val list: List<EconomicIndicator>) : UiModel()
     }
 
-    fun getEconomicIdicatorList(forceRefresh : Boolean = false){
-        viewModelScope.launch{
+    fun getEconomicIdicatorList(forceRefresh: Boolean = false) {
+        launch {
             _model.value = UiModel.Loading(true)
-            when(val result = getEconomicIndicatorUseCase.invoke(forceRefresh)){
+            when (val result = getEconomicIndicatorUseCase.invoke(forceRefresh)) {
                 is Result.Success -> _model.value = UiModel.Success(result.data)
                 is Result.ServerError -> _model.value = UiModel.Error
                 is Result.ConnectionError -> _model.value = UiModel.ConnectionError
@@ -37,8 +42,8 @@ class EconomicIndicatorViewModel(private val getEconomicIndicatorUseCase: GetEco
     }
 
     fun forceGetEconomicIdicatorList() {
-        viewModelScope.launch {
-            when(val result = getEconomicIndicatorUseCase.invoke(true)){
+        launch {
+            when (val result = getEconomicIndicatorUseCase.invoke(true)) {
                 is Result.Success -> _model.value = UiModel.Success(result.data)
                 is Result.ServerError -> _model.value = UiModel.Error
                 is Result.ConnectionError -> _model.value = UiModel.ConnectionError

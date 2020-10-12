@@ -31,7 +31,7 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
     private val economicIndicatorValue : String by lazy { args.value }
     private val errorViewHelper: ErrorViewHelper by lazy { initErrorViewHelper() }
     private val viewModel: EconomicIndicatorDetailViewModel by lazy {
-        EconomicIndicatorDetailViewModel(appContainer().getEconomicIndicatorDetailUseCase())
+        EconomicIndicatorDetailViewModel(appContainer().getEconomicIndicatorDetailUseCase(), appContainer().getCoroutineDispacher())
     }
 
 

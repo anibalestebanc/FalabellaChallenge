@@ -19,20 +19,20 @@ import kotlinx.android.synthetic.main.connection_error.*
 import kotlinx.android.synthetic.main.default_error.*
 import kotlinx.android.synthetic.main.fragment_economic_indicator_list.*
 import kotlinx.android.synthetic.main.loading.*
+import kotlinx.coroutines.Dispatchers
 
 class EconomicIndicatorFragment : BaseFragment() {
 
 
     private val viewModel: EconomicIndicatorViewModel by lazy {
-        EconomicIndicatorViewModel(appContainer().getEconomicIndicatorListUseCase())
+        EconomicIndicatorViewModel(appContainer().getEconomicIndicatorListUseCase(),appContainer().getCoroutineDispacher())
     }
-    private val economicIndicatorAdapter =
-        EconomicIndicatorAdapter(::onEconomicIndicatorClicked)
+    private val economicIndicatorAdapter = EconomicIndicatorAdapter(::onEconomicIndicatorClicked)
+
     private val errorViewHelper: ErrorViewHelper by lazy { initErrorViewHelper() }
+
     private val economicIndicatorSortedBy: EconomicIndicatorSortedByImpl by lazy {
-        EconomicIndicatorSortedByImpl(
-            economicIndicatorAdapter
-        )
+        EconomicIndicatorSortedByImpl(economicIndicatorAdapter)
     }
 
     override fun onCreateView(
@@ -52,7 +52,6 @@ class EconomicIndicatorFragment : BaseFragment() {
         setUpSwipeRefresh()
         viewModel.getEconomicIdicatorList()
     }
-
 
     private fun initErrorViewHelper(): ErrorViewHelper =
         ErrorViewHelper(
