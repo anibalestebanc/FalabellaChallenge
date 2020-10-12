@@ -25,6 +25,7 @@ class EconomicIndicatorSerieRecyclerViewAdapter
     }
 
     override fun getItemCount(): Int = economicIndicatorSerieList.size
+
     fun setEconomicIndicatorSerieList(serieList: List<Serie>) {
         economicIndicatorSerieList = serieList
         notifyDataSetChanged()

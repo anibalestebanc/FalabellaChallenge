@@ -10,14 +10,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.challenge.R
 
-class EconomicIndicatorRecyclerViewAdapter (private val listener : (EconomicIndicator) -> Unit)
-    : RecyclerView.Adapter<EconomicIndicatorRecyclerViewAdapter.ViewHolder>(), Filterable {
+class EconomicIndicatorAdapter(private val listener: (EconomicIndicator) -> Unit) :
+    RecyclerView.Adapter<EconomicIndicatorAdapter.ViewHolder>(), Filterable,
+    EconomicIndicatorAdapterView, EconomicIndicatorSortedByView {
 
-     var economicIndicators : List<EconomicIndicator> = emptyList()
-     var economicIndicatorFiltered : List<EconomicIndicator> = economicIndicators
+    private var economicIndicators: List<EconomicIndicator> = emptyList()
+    private var economicIndicatorFiltered: List<EconomicIndicator> = economicIndicators
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_economic_indicator, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_economic_indicator, parent, false)
         return ViewHolder(view)
     }
 
@@ -33,28 +35,16 @@ class EconomicIndicatorRecyclerViewAdapter (private val listener : (EconomicIndi
 
     override fun getItemCount(): Int = economicIndicatorFiltered.size
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val itemName: TextView = view.findViewById(R.id.nameTextView)
-        val itemUnitOfMeasure: TextView = view.findViewById(R.id.unitOfMeasureTextView)
-        val itemValue: TextView = view.findViewById(R.id.valueTextView)
-    }
-
     override fun getFilter(): Filter = EconomicIndicatorFilter(this)
 
-    fun sortedClear() {
-        economicIndicatorFiltered = economicIndicators;
+    override fun getEconomicIndicatorList(): List<EconomicIndicator> = economicIndicators
+
+    override fun setEconomicIndicatorFiltered(list: List<EconomicIndicator>) {
+        economicIndicatorFiltered = list
         notifyDataSetChanged()
     }
-
-    fun sortedByAsc() {
-        val sortedList = economicIndicators.sortedBy { it.name }
-        economicIndicatorFiltered = sortedList
-        notifyDataSetChanged()
-    }
-
-    fun sortedByDes() {
-        val sortedList = economicIndicators.sortedByDescending { it.name }
-        economicIndicatorFiltered = sortedList
+    override fun setEconomicIndicatorSorted(list: List<EconomicIndicator>) {
+        economicIndicatorFiltered = list
         notifyDataSetChanged()
     }
 
@@ -62,5 +52,11 @@ class EconomicIndicatorRecyclerViewAdapter (private val listener : (EconomicIndi
         economicIndicators = list
         economicIndicatorFiltered = economicIndicators
         notifyDataSetChanged()
+    }
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val itemName: TextView = view.findViewById(R.id.nameTextView)
+        val itemUnitOfMeasure: TextView = view.findViewById(R.id.unitOfMeasureTextView)
+        val itemValue: TextView = view.findViewById(R.id.valueTextView)
     }
 }

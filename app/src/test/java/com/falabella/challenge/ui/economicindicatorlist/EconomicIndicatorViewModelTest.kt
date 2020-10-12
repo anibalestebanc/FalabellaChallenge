@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import org.junit.Rule
 import org.junit.Test
 import androidx.lifecycle.Observer
-import com.falabella.domain.model.DataResponse
+import com.falabella.domain.model.Result
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.challenge.ui.MainCoroutineRule
 import com.nhaarman.mockitokotlin2.mock
@@ -45,7 +45,7 @@ class EconomicIndicatorViewModelTest{
 
         runBlocking {
             val forceRefresh = false
-            val emptyList : DataResponse<List<EconomicIndicator>> = DataResponse.Success(emptyList())
+            val emptyList : Result<List<EconomicIndicator>> = Result.Success(emptyList())
 
             whenever(getEconomicIndicatorUseCase.invoke(forceRefresh)).thenReturn(emptyList)
 
@@ -72,7 +72,7 @@ class EconomicIndicatorViewModelTest{
             )
             val economicIndicatorList = listOf(utm)
 
-            val economicIndicatorResponse = DataResponse.Success(economicIndicatorList)
+            val economicIndicatorResponse = Result.Success(economicIndicatorList)
 
             whenever(getEconomicIndicatorUseCase.invoke(forceRefresh)).thenReturn(economicIndicatorResponse)
 
@@ -92,7 +92,7 @@ class EconomicIndicatorViewModelTest{
         runBlocking {
             val forceRefresh = false
             val serverError = 100
-            val serverErrorResponse  = DataResponse.ServerError(serverError)
+            val serverErrorResponse  = Result.ServerError(serverError)
 
             whenever(getEconomicIndicatorUseCase.invoke(forceRefresh)).thenReturn(serverErrorResponse)
 

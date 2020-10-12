@@ -98,7 +98,7 @@ data class Utm (
     @SerializedName("nombre") val nombre : String,
     @SerializedName("unidad_medida") val unidad_medida : String,
     @SerializedName("fecha") val fecha : String,
-    @SerializedName("valor") val valor : Int
+    @SerializedName("valor") val valor : Double
 )
 
 data class Imacec (
