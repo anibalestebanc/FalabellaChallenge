@@ -31,7 +31,7 @@ class EconomicIndicatorLocalDataSourceImpl(localDataBase: LocalDatabase)
         }
 
 
-    override suspend fun getEconomicIndicatorDetailIsEmpty(economicIndicatorCode: String): Boolean =
+    override suspend fun isEconomicIndicatorDetailEmpty(economicIndicatorCode: String): Boolean =
         withContext(Dispatchers.IO){
             if (economicIndicatorDetailDao.getEconomicIndicatorByCode(economicIndicatorCode) == null){
                 return@withContext true

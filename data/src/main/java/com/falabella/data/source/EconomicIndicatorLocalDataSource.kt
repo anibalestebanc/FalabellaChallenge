@@ -8,7 +8,7 @@ interface EconomicIndicatorLocalDataSource {
    suspend fun isEconomicIndicatorListEmpty(): Boolean
    suspend fun saveEconomicIndicatorList(list : List<EconomicIndicator>)
 
-   suspend fun getEconomicIndicatorDetailIsEmpty(economicIndicatorCode : String) : Boolean
+   suspend fun isEconomicIndicatorDetailEmpty(economicIndicatorCode : String) : Boolean
    suspend fun getEconomicIndicatorDetail(economicIndicatorCode : String) : EconomicIndicatorDetail
    suspend fun saveEconomicIndicatorDetail(economicIndicatorDetail: EconomicIndicatorDetail)
 }
