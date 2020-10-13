@@ -115,11 +115,11 @@ class EconomicIndicatorFragment : BaseFragment() {
             is EconomicIndicatorViewModel.UiModel.ConnectionError -> errorViewHelper.showConnection()
             is EconomicIndicatorViewModel.UiModel.Error -> errorViewHelper.showError()
             is EconomicIndicatorViewModel.UiModel.Success -> showEconomicIndicatorList(model.list)
-            is EconomicIndicatorViewModel.UiModel.Refresh -> showSwipeRefresh(model.value)
+            is EconomicIndicatorViewModel.UiModel.Refresh -> showSwipeRefresh()
         }
     }
 
-    private fun showSwipeRefresh(value: Boolean) {
+    private fun showSwipeRefresh() {
         if (swipe_refresh_economic_indicator_list.isRefreshing) {
             swipe_refresh_economic_indicator_list.isRefreshing = false
         }

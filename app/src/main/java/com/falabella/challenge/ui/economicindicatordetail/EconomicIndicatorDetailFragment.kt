@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.falabella.domain.model.Serie
 import com.falabella.challenge.R
 import com.falabella.challenge.ui.common.BaseFragment
 import com.falabella.challenge.ui.common.ErrorViewHelper
 import com.falabella.challenge.ui.economicindicatordetail.economicindicatorserieitem.EconomicIndicatorSerieRecyclerViewAdapter
+import com.falabella.domain.model.EconomicIndicatorDetail
 import kotlinx.android.synthetic.main.connection_error.*
 import kotlinx.android.synthetic.main.default_error.*
 import kotlinx.android.synthetic.main.fragment_economic_indicator_detail.*
@@ -79,12 +79,12 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
             is EconomicIndicatorDetailViewModel.UiModel.Error -> errorViewHelper.showError()
             is EconomicIndicatorDetailViewModel.UiModel.ConnectionError -> errorViewHelper.showConnection()
             is EconomicIndicatorDetailViewModel.UiModel.Loading ->errorViewHelper.showLoading()
-            is EconomicIndicatorDetailViewModel.UiModel.Success -> showEconomicIndicatorDetail(model.list)
-            is EconomicIndicatorDetailViewModel.UiModel.Refresh -> showSwipeRefresh(model.value)
+            is EconomicIndicatorDetailViewModel.UiModel.Success -> showEconomicIndicatorDetail(model.detail)
+            is EconomicIndicatorDetailViewModel.UiModel.Refresh -> showSwipeRefresh()
         }
     }
 
-    private fun showSwipeRefresh(value: Boolean) {
+    private fun showSwipeRefresh() {
         if(swipe_refresh_economic_indicator_detail.isRefreshing){
             swipe_refresh_economic_indicator_detail.isRefreshing = false
         }
@@ -101,8 +101,8 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
         }
     }
 
-    private fun showEconomicIndicatorDetail(serieList: List<Serie>) {
-        economicDetailAdapter.setEconomicIndicatorSerieList(serieList)
+    private fun showEconomicIndicatorDetail(detail : EconomicIndicatorDetail) {
+        economicDetailAdapter.setEconomicIndicatorSerieList(detail.serieList)
         errorViewHelper.showContent()
     }
 

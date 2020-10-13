@@ -24,7 +24,7 @@ class EconomicIndicatorViewModel(
         object Error : UiModel()
         object ConnectionError : UiModel()
         object Loading : UiModel()
-        data class Refresh(val value: Boolean) : UiModel()
+        object Refresh : UiModel()
         data class Success(val list: List<EconomicIndicator>) : UiModel()
     }
 
@@ -46,7 +46,7 @@ class EconomicIndicatorViewModel(
                 is Result.ServerError -> _model.value = UiModel.Error
                 is Result.ConnectionError -> _model.value = UiModel.ConnectionError
             }
-            _model.value = UiModel.Refresh(true)
+            _model.value = UiModel.Refresh
         }
     }
 }
