@@ -8,6 +8,8 @@ import com.falabella.domain.usecase.GetEconomicIndicatorListUseCase
 import kotlinx.coroutines.launch
 import com.falabella.domain.model.Result
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
 
 class EconomicIndicatorViewModel(
     private val getEconomicIndicatorUseCase: GetEconomicIndicatorListUseCase,
@@ -24,30 +26,40 @@ class EconomicIndicatorViewModel(
         object Error : UiModel()
         object ConnectionError : UiModel()
         object Loading : UiModel()
-        object Refresh : UiModel()
         data class Success(val list: List<EconomicIndicator>) : UiModel()
+        object FinishState : UiModel()
     }
 
-    fun getEconomicIdicatorList(forceRefresh: Boolean = false) {
+    fun getEconomicIndicatorList() {
         launch {
-            _model.value = UiModel.Loading
-            when (val result = getEconomicIndicatorUseCase.invoke(forceRefresh)) {
-                is Result.Success -> _model.value = UiModel.Success(result.data)
-                is Result.ServerError -> _model.value = UiModel.Error
-                is Result.ConnectionError -> _model.value = UiModel.ConnectionError
-            }
+            setLoadingState()
+            getEconomicIndicatorUseCase.invoke(false).collect { setResult(it) }
+            setFinishState()
         }
     }
 
-    fun forceGetEconomicIdicatorList() {
+    fun refreshEconomicIndicatorList(){
         launch {
-            when (val result = getEconomicIndicatorUseCase.invoke(true)) {
-                is Result.Success -> _model.value = UiModel.Success(result.data)
-                is Result.ServerError -> _model.value = UiModel.Error
-                is Result.ConnectionError -> _model.value = UiModel.ConnectionError
-            }
-            _model.value = UiModel.Refresh
+            getEconomicIndicatorUseCase.invoke(true).collect { setResult(it) }
+            setFinishState()
         }
     }
+
+    private fun setResult(result: Result<List<EconomicIndicator>>){
+        when (result) {
+            is Result.Success -> _model.value = UiModel.Success(result.data)
+            is Result.ServerError -> _model.value = UiModel.Error
+            is Result.ConnectionError -> _model.value = UiModel.ConnectionError
+        }
+    }
+
+    private fun setLoadingState(){
+        _model.value = UiModel.Loading
+    }
+
+    private fun setFinishState(){
+        _model.value = UiModel.FinishState
+    }
+
 }
 

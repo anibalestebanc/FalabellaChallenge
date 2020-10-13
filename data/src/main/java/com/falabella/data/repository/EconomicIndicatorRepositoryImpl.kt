@@ -6,21 +6,15 @@ import com.falabella.domain.model.Result
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.domain.model.EconomicIndicatorDetail
 import com.falabella.domain.repository.EconomicIndicatorRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class EconomicIndicatorRepositoryImpl(
     private val localDataSource: EconomicIndicatorLocalDataSource,
     private val remoteDataSource: EconomicIndicatorRemoteDataSource
 ): EconomicIndicatorRepository {
-
-    override suspend fun getEconomicIndicatorList(forceRefresh : Boolean): Result<List<EconomicIndicator>> {
-        if (forceRefresh || localDataSource.isEconomicIndicatorListEmpty()){
-            val result =  remoteDataSource.getEconomicIndicatorList()
-            if (result is Result.Success)
-                localDataSource.saveEconomicIndicatorList(result.data)
-            else return result
-        }
-        return Result.Success(localDataSource.getEconomicIndicatorList())
-    }
 
     override suspend fun getEconomicIndicatorDetail(economicIndicatorCode: String, forceRefresh : Boolean): Result<EconomicIndicatorDetail> {
 
@@ -32,4 +26,16 @@ class EconomicIndicatorRepositoryImpl(
         }
         return Result.Success(localDataSource.getEconomicIndicatorDetail(economicIndicatorCode))
     }
+
+    override fun getEconomicIndicatorList(forceRefresh : Boolean): Flow<Result<List<EconomicIndicator>>> = flow {
+        if (!forceRefresh && !localDataSource.isEconomicIndicatorListEmpty()){
+            emit(Result.Success(localDataSource.getEconomicIndicatorList()))
+        }
+        //condition to call server
+        val result = remoteDataSource.getEconomicIndicatorList()
+        if (result is Result.Success){
+            localDataSource.saveEconomicIndicatorList(result.data)
+        }
+        emit(result)
+    }.flowOn(Dispatchers.IO)
 }

@@ -5,7 +5,7 @@ import com.falabella.domain.repository.EconomicIndicatorRepository
 import com.falabella.challenge.common.ConnectionHelper
 import com.falabella.challenge.data.database.LocalDatabase
 import com.falabella.challenge.data.database.economicindicator.EconomicIndicatorLocalDataSourceImpl
-import com.falabella.challenge.data.server.RetrofitClient
+import com.falabella.challenge.data.server.client.RetrofitClient
 import com.falabella.challenge.data.server.economicindicator.EconomicIndicatorRemoteDataSourceImpl
 import com.falabella.challenge.data.server.economicindicator.EconomicIndicatorService
 

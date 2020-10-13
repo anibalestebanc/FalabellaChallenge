@@ -1,4 +1,4 @@
-package com.falabella.challenge.data.server.economicindicator
+package com.falabella.challenge.data.server.model
 
 import com.google.gson.annotations.SerializedName
 

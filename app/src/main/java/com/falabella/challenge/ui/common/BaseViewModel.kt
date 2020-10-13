@@ -2,6 +2,7 @@ package com.falabella.challenge.ui.common
 
 import androidx.annotation.CallSuper
 import androidx.lifecycle.ViewModel
+import com.falabella.challenge.ui.util.Scope
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**

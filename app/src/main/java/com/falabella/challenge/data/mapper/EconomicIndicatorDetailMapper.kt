@@ -2,10 +2,10 @@ package com.falabella.challenge.data.mapper
 
 import com.falabella.domain.model.EconomicIndicatorDetail
 import com.falabella.domain.model.Serie
-import com.falabella.challenge.data.server.economicindicator.EconomicIndicatorDetailSchema
-import com.falabella.challenge.data.server.economicindicator.Serie as SerieSchema
+import com.falabella.challenge.data.server.model.EconomicIndicatorDetailSchema
+import com.falabella.challenge.data.server.model.Serie as SerieSchema
 
-import com.falabella.challenge.data.database.economicindicator.EconomicIndicatorDetail as EconomicIndicatorDetailRoom
+import com.falabella.challenge.data.database.entity.EconomicIndicatorDetail as EconomicIndicatorDetailRoom
 
 /**
  * Created by Anibal Cortez on 10/8/20.

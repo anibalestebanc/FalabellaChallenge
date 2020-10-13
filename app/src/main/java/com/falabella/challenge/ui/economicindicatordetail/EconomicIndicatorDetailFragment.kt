@@ -10,7 +10,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.falabella.challenge.R
 import com.falabella.challenge.ui.common.BaseFragment
-import com.falabella.challenge.ui.common.ErrorViewHelper
+import com.falabella.challenge.ui.util.ErrorViewHelper
 import com.falabella.challenge.ui.economicindicatordetail.economicindicatorserieitem.EconomicIndicatorSerieRecyclerViewAdapter
 import com.falabella.domain.model.EconomicIndicatorDetail
 import kotlinx.android.synthetic.main.connection_error.*

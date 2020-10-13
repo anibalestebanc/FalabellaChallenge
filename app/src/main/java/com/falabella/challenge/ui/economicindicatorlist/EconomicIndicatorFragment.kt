@@ -13,13 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.challenge.R
 import com.falabella.challenge.ui.common.BaseFragment
-import com.falabella.challenge.ui.common.ErrorViewHelper
+import com.falabella.challenge.ui.util.ErrorViewHelper
 import com.falabella.challenge.ui.economicindicatorlist.economicindicatoritem.EconomicIndicatorAdapter
 import kotlinx.android.synthetic.main.connection_error.*
 import kotlinx.android.synthetic.main.default_error.*
 import kotlinx.android.synthetic.main.fragment_economic_indicator_list.*
 import kotlinx.android.synthetic.main.loading.*
-import kotlinx.coroutines.Dispatchers
 
 class EconomicIndicatorFragment : BaseFragment() {
 
@@ -50,7 +49,7 @@ class EconomicIndicatorFragment : BaseFragment() {
         setUpSearchView()
         setUpSpinnerSortedBy()
         setUpSwipeRefresh()
-        viewModel.getEconomicIdicatorList()
+        viewModel.getEconomicIndicatorList()
     }
 
     private fun initErrorViewHelper(): ErrorViewHelper =
@@ -63,7 +62,7 @@ class EconomicIndicatorFragment : BaseFragment() {
 
     private fun setUpSwipeRefresh() {
         swipe_refresh_economic_indicator_list.setOnRefreshListener {
-            viewModel.forceGetEconomicIdicatorList()
+            viewModel.refreshEconomicIndicatorList()
         }
     }
 
@@ -115,15 +114,20 @@ class EconomicIndicatorFragment : BaseFragment() {
             is EconomicIndicatorViewModel.UiModel.ConnectionError -> errorViewHelper.showConnection()
             is EconomicIndicatorViewModel.UiModel.Error -> errorViewHelper.showError()
             is EconomicIndicatorViewModel.UiModel.Success -> showEconomicIndicatorList(model.list)
-            is EconomicIndicatorViewModel.UiModel.Refresh -> showSwipeRefresh()
+            is EconomicIndicatorViewModel.UiModel.FinishState -> hideSwipeRefresh()
         }
     }
 
     private fun showSwipeRefresh() {
+        if (!swipe_refresh_economic_indicator_list.isRefreshing) {
+            swipe_refresh_economic_indicator_list.isRefreshing = true
+        }
+    }
+
+    private fun hideSwipeRefresh(){
         if (swipe_refresh_economic_indicator_list.isRefreshing) {
             swipe_refresh_economic_indicator_list.isRefreshing = false
         }
-
     }
 
     private fun setUpRecyclerView() {
@@ -143,6 +147,7 @@ class EconomicIndicatorFragment : BaseFragment() {
     private fun showEconomicIndicatorList(economicIndicatorList: List<EconomicIndicator>) {
         economicIndicatorAdapter.setEconomicIndicatorList(economicIndicatorList)
         errorViewHelper.showContent()
+        showSwipeRefresh()
     }
 }
 

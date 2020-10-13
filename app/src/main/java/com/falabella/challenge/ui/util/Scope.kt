@@ -1,4 +1,4 @@
-package com.falabella.challenge.ui.common
+package com.falabella.challenge.ui.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

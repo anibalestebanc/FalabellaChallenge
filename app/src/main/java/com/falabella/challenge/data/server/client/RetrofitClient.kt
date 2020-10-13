@@ -1,4 +1,4 @@
-package com.falabella.challenge.data.server
+package com.falabella.challenge.data.server.client
 
 import com.falabella.challenge.data.server.economicindicator.EconomicIndicatorService
 import okhttp3.OkHttpClient

@@ -1,5 +1,7 @@
 package com.falabella.challenge.data.server.economicindicator
 
+import com.falabella.challenge.data.server.model.EconomicIndicatorDetailSchema
+import com.falabella.challenge.data.server.model.EconomicIndicatorSchema
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

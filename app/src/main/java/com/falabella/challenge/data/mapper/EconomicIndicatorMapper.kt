@@ -1,8 +1,8 @@
 package com.falabella.challenge.data.mapper
 
 import com.falabella.domain.model.EconomicIndicator
-import com.falabella.challenge.data.database.economicindicator.EconomicIndicator as EconomicIndicatorRoom
-import com.falabella.challenge.data.server.economicindicator.EconomicIndicatorSchema
+import com.falabella.challenge.data.database.entity.EconomicIndicator as EconomicIndicatorRoom
+import com.falabella.challenge.data.server.model.EconomicIndicatorSchema
 
 
 fun EconomicIndicatorRoom.toDomain() : EconomicIndicator = EconomicIndicator(
