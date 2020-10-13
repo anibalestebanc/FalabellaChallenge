@@ -23,14 +23,14 @@ class EconomicIndicatorDetailViewModel(
     sealed class UiModel {
         object Error : UiModel()
         object ConnectionError : UiModel()
+        object Loading : UiModel()
         data class Refresh(val value: Boolean) : UiModel()
-        data class Loading(val value: Boolean) : UiModel()
         data class Success(val list: List<Serie>) : UiModel()
     }
 
     fun getEconomicIndicatorDetail(economicIndicatorCode: String, forceRefresh: Boolean = false) {
         launch {
-            _model.value = UiModel.Loading(true)
+            _model.value = UiModel.Loading
             when (val result =
                 economicIndicatorDetailUseCase.invoke(economicIndicatorCode, forceRefresh)) {
                 is Result.ConnectionError -> _model.value = UiModel.ConnectionError

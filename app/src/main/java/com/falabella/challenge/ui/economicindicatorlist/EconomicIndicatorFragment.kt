@@ -111,7 +111,7 @@ class EconomicIndicatorFragment : BaseFragment() {
 
     private fun updateUi(model: EconomicIndicatorViewModel.UiModel) {
         when (model) {
-            is EconomicIndicatorViewModel.UiModel.Loading -> errorViewHelper.showLoading(model.value)
+            is EconomicIndicatorViewModel.UiModel.Loading -> errorViewHelper.showLoading()
             is EconomicIndicatorViewModel.UiModel.ConnectionError -> errorViewHelper.showConnection()
             is EconomicIndicatorViewModel.UiModel.Error -> errorViewHelper.showError()
             is EconomicIndicatorViewModel.UiModel.Success -> showEconomicIndicatorList(model.list)

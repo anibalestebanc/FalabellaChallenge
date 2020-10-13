@@ -7,20 +7,22 @@ import androidx.lifecycle.Observer
 import com.falabella.domain.model.Result
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.challenge.ui.MainCoroutineRule
+import com.falabella.domain.usecase.GetEconomicIndicatorListUseCase
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
 class EconomicIndicatorViewModelTest{
 
-    private val getEconomicIndicatorUseCase: com.falabella.domain.usecase.GetEconomicIndicatorListUseCase = mock()
-    private val viewModel : EconomicIndicatorViewModel = EconomicIndicatorViewModel(getEconomicIndicatorUseCase)
-
+    private val listUseCase: GetEconomicIndicatorListUseCase = mock()
     private val observer: Observer<EconomicIndicatorViewModel.UiModel> = mock()
+
+    private val viewModel = EconomicIndicatorViewModel(listUseCase, Dispatchers.Unconfined)
 
     @ExperimentalCoroutinesApi
     @get:Rule
@@ -29,25 +31,25 @@ class EconomicIndicatorViewModelTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-
     @Test
-    fun `EconomicIndicator called usecase when GetEconomicIdicatorList is call`(){
+    fun `When the get economic indicator list is called,  the uses cases is invoked`(){
         runBlocking {
             val forceRefresh = false
+
             viewModel.getEconomicIdicatorList()
 
-            verify(getEconomicIndicatorUseCase, times(1)).invoke(forceRefresh)
+            verify(listUseCase, times(1)).invoke(forceRefresh)
         }
     }
 
     @Test
-    fun `EconomicIndicator set emptyList when use case return empty list`(){
+    fun `When the uses case return empty list the view model should be call to success model whit empty list`(){
 
         runBlocking {
             val forceRefresh = false
             val emptyList : Result<List<EconomicIndicator>> = Result.Success(emptyList())
 
-            whenever(getEconomicIndicatorUseCase.invoke(forceRefresh)).thenReturn(emptyList)
+            whenever(listUseCase.invoke(forceRefresh)).thenReturn(emptyList)
 
             viewModel.model.observeForever(observer)
 
@@ -59,7 +61,7 @@ class EconomicIndicatorViewModelTest{
     }
 
     @Test
-    fun `EconomicIndicator set data when use case return a list`()
+    fun `When the uses case return success the view model should be call to success model whit the same list`()
     {
         runBlocking {
             val forceRefresh = false
@@ -74,7 +76,7 @@ class EconomicIndicatorViewModelTest{
 
             val economicIndicatorResponse = Result.Success(economicIndicatorList)
 
-            whenever(getEconomicIndicatorUseCase.invoke(forceRefresh)).thenReturn(economicIndicatorResponse)
+            whenever(listUseCase.invoke(forceRefresh)).thenReturn(economicIndicatorResponse)
 
             viewModel.model.observeForever(observer)
 
@@ -87,14 +89,14 @@ class EconomicIndicatorViewModelTest{
 
 
     @Test
-    fun `EconomicIndicator set error when use case return a serverError`(){
+    fun `If the uses case return error the view model should be call to UiModel with the error`(){
 
         runBlocking {
             val forceRefresh = false
             val serverError = 100
             val serverErrorResponse  = Result.ServerError(serverError)
 
-            whenever(getEconomicIndicatorUseCase.invoke(forceRefresh)).thenReturn(serverErrorResponse)
+            whenever(listUseCase.invoke(forceRefresh)).thenReturn(serverErrorResponse)
 
             viewModel.model.observeForever(observer)
 
@@ -106,23 +108,34 @@ class EconomicIndicatorViewModelTest{
     }
 
     @Test
-    fun `EconomicIndicator set Loading with true when use case is call`(){
+    fun `If the uses case return connection error the view model should be call to UiModel with the connection error`(){
 
         runBlocking {
-            viewModel.model.observeForever(observer)
-            viewModel.getEconomicIdicatorList()
-            verify(observer).onChanged(EconomicIndicatorViewModel.UiModel.Loading(true))
+            val forceRefresh = false
+            val connectionError  = Result.ConnectionError
 
+            whenever(listUseCase.invoke(forceRefresh)).thenReturn(connectionError)
+
+            viewModel.model.observeForever(observer)
+
+            viewModel.getEconomicIdicatorList()
+
+            verify(observer).onChanged(EconomicIndicatorViewModel.UiModel.ConnectionError)
         }
+
     }
 
     @Test
-    fun `EconomicIndicator set Loading with false when use case is call`(){
+    fun `When the view model call to uses case, always should be call to ui model with loading`(){
 
-        viewModel.model.observeForever(observer)
-        viewModel.getEconomicIdicatorList()
+        runBlocking {
+            viewModel.model.observeForever(observer)
 
-        verify(observer).onChanged(EconomicIndicatorViewModel.UiModel.Loading(false))
+            viewModel.getEconomicIdicatorList()
+
+            verify(observer).onChanged(EconomicIndicatorViewModel.UiModel.Loading)
+
+        }
     }
 
 }

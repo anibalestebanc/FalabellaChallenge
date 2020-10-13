@@ -78,7 +78,7 @@ class EconomicIndicatorDetailFragment : BaseFragment() {
         when (model) {
             is EconomicIndicatorDetailViewModel.UiModel.Error -> errorViewHelper.showError()
             is EconomicIndicatorDetailViewModel.UiModel.ConnectionError -> errorViewHelper.showConnection()
-            is EconomicIndicatorDetailViewModel.UiModel.Loading ->errorViewHelper.showLoading(model.value)
+            is EconomicIndicatorDetailViewModel.UiModel.Loading ->errorViewHelper.showLoading()
             is EconomicIndicatorDetailViewModel.UiModel.Success -> showEconomicIndicatorDetail(model.list)
             is EconomicIndicatorDetailViewModel.UiModel.Refresh -> showSwipeRefresh(model.value)
         }
