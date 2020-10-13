@@ -10,16 +10,18 @@ class EconomicIndicatorListUseCaseTest {
 
     private val repository: EconomicIndicatorRepository = mock()
 
-    private val economicIndicatorUseCase: GetEconomicIndicatorListUseCase =
+    private val listUseCase: GetEconomicIndicatorListUseCase =
         GetEconomicIndicatorListUseCase(repository)
 
     @Test
-    fun `EconomicIndicatorList use case call to repository`(){
+    fun `getEconomicIndicatorList of repository is called when the uses case call invoke`(){
 
         runBlocking{
-            economicIndicatorUseCase.invoke(false)
+            val forceRefresh = false
 
-            verify(repository).getEconomicIndicatorList(false)
+            listUseCase.invoke(forceRefresh)
+
+            verify(repository).getEconomicIndicatorList(forceRefresh)
         }
     }
 }

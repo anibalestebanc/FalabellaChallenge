@@ -3,6 +3,7 @@ package com.falabella.challenge.ui.economicindicatordetail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.falabella.challenge.ui.common.BaseViewModel
+import com.falabella.domain.model.EconomicIndicatorDetail
 import com.falabella.domain.model.Serie
 import com.falabella.domain.usecase.GetEconomicIndicatorDetailUseCase
 import kotlinx.coroutines.launch
@@ -23,19 +24,19 @@ class EconomicIndicatorDetailViewModel(
     sealed class UiModel {
         object Error : UiModel()
         object ConnectionError : UiModel()
-        data class Refresh(val value: Boolean) : UiModel()
-        data class Loading(val value: Boolean) : UiModel()
-        data class Success(val list: List<Serie>) : UiModel()
+        object Loading : UiModel()
+        object Refresh : UiModel()
+        data class Success(val detail : EconomicIndicatorDetail) : UiModel()
     }
 
     fun getEconomicIndicatorDetail(economicIndicatorCode: String, forceRefresh: Boolean = false) {
         launch {
-            _model.value = UiModel.Loading(true)
+            _model.value = UiModel.Loading
             when (val result =
                 economicIndicatorDetailUseCase.invoke(economicIndicatorCode, forceRefresh)) {
                 is Result.ConnectionError -> _model.value = UiModel.ConnectionError
                 is Result.ServerError -> _model.value = UiModel.Error
-                is Result.Success -> _model.value = UiModel.Success(result.data.serieList)
+                is Result.Success -> _model.value = UiModel.Success(result.data)
             }
 
         }
@@ -46,9 +47,9 @@ class EconomicIndicatorDetailViewModel(
             when (val result = economicIndicatorDetailUseCase.invoke(economicIndicatorCode, true)) {
                 is Result.ConnectionError -> _model.value = UiModel.ConnectionError
                 is Result.ServerError -> _model.value = UiModel.Error
-                is Result.Success -> _model.value = UiModel.Success(result.data.serieList)
+                is Result.Success -> _model.value = UiModel.Success(result.data)
             }
-            _model.value = UiModel.Refresh(false)
+            _model.value = UiModel.Refresh
         }
     }
 }

@@ -13,17 +13,21 @@ class EconomicIndicatorRemoteDataSourceImplTest {
 
     private val economicIndicatorService: EconomicIndicatorService = mock()
     private val connectionHelper: ConnectionHelper = mock()
+
     private val remoteDataSourceImpl = EconomicIndicatorRemoteDataSourceImpl(
         connectionHelper, economicIndicatorService
     )
 
     @Test
-    fun `Should be return connection error when the device doesn't have connection`() {
+    fun `when the device doesn't have connection the remote data source should be return connection error`() {
         runBlocking {
+
             val expectedResponse = Result.ConnectionError
+
             whenever(connectionHelper.isConnected()).thenReturn(false)
 
             val result = remoteDataSourceImpl.getEconomicIndicatorList()
+
             assertEquals(expectedResponse, result)
         }
     }

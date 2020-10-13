@@ -24,7 +24,7 @@ class EconomicIndicatorRepositoryImpl(
 
     override suspend fun getEconomicIndicatorDetail(economicIndicatorCode: String, forceRefresh : Boolean): Result<EconomicIndicatorDetail> {
 
-        if (forceRefresh || localDataSource.getEconomicIndicatorDetailIsEmpty(economicIndicatorCode)){
+        if (forceRefresh || localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorCode)){
             val result =  remoteDataSource.getEconomicIndicatorDetail(economicIndicatorCode)
             if (result is Result.Success)
                 localDataSource.saveEconomicIndicatorDetail(result.data)

@@ -18,7 +18,7 @@ class ErrorViewHelper(
 
     fun showConnection() = showNewView(connectionView)
 
-    fun showLoading(boolean: Boolean) = showNewView(loadingView)
+    fun showLoading() = showNewView(loadingView)
 
     fun showError() = showNewView(errorView)
 
