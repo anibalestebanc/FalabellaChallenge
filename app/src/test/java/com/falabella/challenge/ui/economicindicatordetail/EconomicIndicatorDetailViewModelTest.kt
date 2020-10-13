@@ -13,6 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import com.falabella.domain.model.Result
+import com.falabella.testshared.economicIndicatorDetailMock
+import com.falabella.testshared.economicIndicatorMock
+import com.falabella.testshared.serverErrorMock
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,12 +40,12 @@ class EconomicIndicatorDetailViewModelTest {
     @Test
     fun `When economic indicator detail is called the view model always should be call to loading UiModel`() {
 
-        val economicIndicatorCode = "uf"
+
         val forceRefresh = false
 
         viewModel.model.observeForever(observer)
 
-        viewModel.getEconomicIndicatorDetail(economicIndicatorCode, forceRefresh)
+        viewModel.getEconomicIndicatorDetail(economicIndicatorMock.code, forceRefresh)
 
         verify(observer).onChanged(EconomicIndicatorDetailViewModel.UiModel.Loading)
     }
@@ -50,11 +53,10 @@ class EconomicIndicatorDetailViewModelTest {
     @Test
     fun `When the force economic indicator detail is called the view model always should be call to refresh UiModel`() {
 
-        val economicIndicatorCode = "uf"
 
         viewModel.model.observeForever(observer)
 
-        viewModel.refreshEconomicIndicatorDetail(economicIndicatorCode)
+        viewModel.refreshEconomicIndicatorDetail(economicIndicatorMock.code)
 
         verify(observer).onChanged(EconomicIndicatorDetailViewModel.UiModel.Refresh)
     }
@@ -63,12 +65,11 @@ class EconomicIndicatorDetailViewModelTest {
     fun `When the use case return connection error the view model should be call to connection error UiModel`() {
 
         runBlocking {
-            val economicIndicatorCode = "uf"
             whenever(detailUseCase.invoke(any(), any())).thenReturn(Result.ConnectionError)
 
             viewModel.model.observeForever(observer)
 
-            viewModel.getEconomicIndicatorDetail(economicIndicatorCode)
+            viewModel.getEconomicIndicatorDetail(economicIndicatorMock.code)
 
             verify(observer).onChanged(EconomicIndicatorDetailViewModel.UiModel.ConnectionError)
         }
@@ -78,14 +79,13 @@ class EconomicIndicatorDetailViewModelTest {
     fun `When the use case return error the view model should be call to error UiModel`() {
 
         runBlocking {
-            val economicIndicatorCode = "uf"
-            val serverError = 500
-            val expectedResult = Result.ServerError(serverError)
+
+            val expectedResult = Result.ServerError(serverErrorMock)
             whenever(detailUseCase.invoke(any(), any())).thenReturn(expectedResult)
 
             viewModel.model.observeForever(observer)
 
-            viewModel.getEconomicIndicatorDetail(economicIndicatorCode)
+            viewModel.getEconomicIndicatorDetail(economicIndicatorMock.code)
 
             verify(observer).onChanged(EconomicIndicatorDetailViewModel.UiModel.Error)
         }
@@ -95,22 +95,16 @@ class EconomicIndicatorDetailViewModelTest {
     fun `When the use case return success the view model should be call to success UiModel with the same value`() {
 
         runBlocking {
-            val economicIndicatorCode = "uf"
 
-            val economicIndicatorDetail = EconomicIndicatorDetail(
-                economicIndicatorCode,
-                listOf()
-            )
-
-            val expectedResult = Result.Success(economicIndicatorDetail)
+            val expectedResult = Result.Success(economicIndicatorDetailMock)
 
             whenever(detailUseCase.invoke(any(), any())).thenReturn(expectedResult)
 
             viewModel.model.observeForever(observer)
 
-            viewModel.getEconomicIndicatorDetail(economicIndicatorCode)
+            viewModel.getEconomicIndicatorDetail(economicIndicatorMock.code)
 
-            verify(observer).onChanged(EconomicIndicatorDetailViewModel.UiModel.Success(economicIndicatorDetail))
+            verify(observer).onChanged(EconomicIndicatorDetailViewModel.UiModel.Success(economicIndicatorDetailMock))
         }
     }
 
@@ -118,21 +112,17 @@ class EconomicIndicatorDetailViewModelTest {
     fun `When the user call refresh and the use case return success the view model should be call to success UiModel with the same value`() {
 
         runBlocking {
-            val economicIndicatorCode = "uf"
 
-            val economicIndicatorDetail = EconomicIndicatorDetail(
-                economicIndicatorCode,
-                listOf()
-            )
-            val expectedResult = Result.Success(economicIndicatorDetail)
+            val expectedResult = Result.Success(economicIndicatorDetailMock)
 
             whenever(detailUseCase.invoke(any(), any())).thenReturn(expectedResult)
 
             viewModel.model.observeForever(observer)
 
-            viewModel.refreshEconomicIndicatorDetail(economicIndicatorCode)
+            viewModel.refreshEconomicIndicatorDetail(economicIndicatorMock.code)
 
-            verify(observer).onChanged(EconomicIndicatorDetailViewModel.UiModel.Success(economicIndicatorDetail))
+            verify(observer).onChanged(EconomicIndicatorDetailViewModel.UiModel.Success(
+                economicIndicatorDetailMock))
         }
     }
 

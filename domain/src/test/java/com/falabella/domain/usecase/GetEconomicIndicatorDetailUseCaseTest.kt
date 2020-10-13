@@ -1,6 +1,7 @@
 package com.falabella.domain.usecase
 
 import com.falabella.domain.repository.EconomicIndicatorRepository
+import com.falabella.testshared.economicIndicatorMock
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -20,12 +21,11 @@ class GetEconomicIndicatorDetailUseCaseTest{
     fun `getEconomicIndicatorDetail of repository is called when details uses cases is invoke`(){
 
         runBlocking {
-            val economicIndicatorCode  = "100"
             val forceRefresh = false
 
-            detailUseCase.invoke(economicIndicatorCode, forceRefresh)
+            detailUseCase.invoke(economicIndicatorMock.code, forceRefresh)
 
-            verify(repository, times(1)).getEconomicIndicatorDetail(economicIndicatorCode,forceRefresh)
+            verify(repository, times(1)).getEconomicIndicatorDetail(economicIndicatorMock.code,forceRefresh)
         }
     }
 }

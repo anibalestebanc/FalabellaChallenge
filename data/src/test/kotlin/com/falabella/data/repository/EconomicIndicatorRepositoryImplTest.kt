@@ -5,6 +5,9 @@ import com.falabella.data.source.EconomicIndicatorRemoteDataSource
 import com.falabella.domain.model.Result
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.domain.model.EconomicIndicatorDetail
+import com.falabella.testshared.economicIndicatorDetailMock
+import com.falabella.testshared.economicIndicatorMock
+import com.falabella.testshared.serverErrorMock
 import com.nhaarman.mockitokotlin2.*
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
@@ -52,15 +55,7 @@ class EconomicIndicatorRepositoryImplTest {
 
             val forceRefresh = false
 
-            val economicIndicator = EconomicIndicator(
-                "ipc",
-                "Indice de Precios al Consumidor (IPC)",
-                "Porcentaje",
-                "2020-08-01T04:00:00.000Z",
-                "0.1"
-            )
-            val economicIndicatorList: List<EconomicIndicator> = listOf(economicIndicator)
-
+            val economicIndicatorList: List<EconomicIndicator> = listOf(economicIndicatorMock)
 
             whenever(localDataSource.isEconomicIndicatorListEmpty()).thenReturn(false)
             whenever(localDataSource.getEconomicIndicatorList()).thenReturn(economicIndicatorList)
@@ -74,13 +69,15 @@ class EconomicIndicatorRepositoryImplTest {
     @Test
     fun `When the remote data source return error, the repository should be return the same`() {
         runBlocking {
+
             val forceRefresh = false
-            val serverError = 500
-            val expectedResult = Result.ServerError(serverError)
+
+            val expectedResult = Result.ServerError(serverErrorMock)
             whenever(localDataSource.isEconomicIndicatorListEmpty()).thenReturn(true)
+
             whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(
                 Result.ServerError(
-                    serverError
+                    serverErrorMock
                 )
             )
 
@@ -95,14 +92,8 @@ class EconomicIndicatorRepositoryImplTest {
     fun `If the remote data source return success, the repository should be return the same`() {
         runBlocking {
             val forceRefresh = false
-            val economicIndicator = EconomicIndicator(
-                "ipc",
-                "Indice de Precios al Consumidor (IPC)",
-                "Porcentaje",
-                "2020-08-01T04:00:00.000Z",
-                "0.1"
-            )
-            val economicIndicatorList: List<EconomicIndicator> = listOf(economicIndicator)
+
+            val economicIndicatorList: List<EconomicIndicator> = listOf(economicIndicatorMock)
 
             whenever(localDataSource.isEconomicIndicatorListEmpty()).thenReturn(true)
             whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(
@@ -123,14 +114,8 @@ class EconomicIndicatorRepositoryImplTest {
     fun `If the remote data source return success, the local data source should be call the save method`() {
         runBlocking {
             val forceRefresh = false
-            val economicIndicator = EconomicIndicator(
-                "ipc",
-                "Indice de Precios al Consumidor (IPC)",
-                "Porcentaje",
-                "2020-08-01T04:00:00.000Z",
-                "0.1"
-            )
-            val economicIndicatorList: List<EconomicIndicator> = listOf(economicIndicator)
+
+            val economicIndicatorList: List<EconomicIndicator> = listOf(economicIndicatorMock)
 
             whenever(localDataSource.isEconomicIndicatorListEmpty()).thenReturn(true)
             whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(
@@ -167,12 +152,11 @@ class EconomicIndicatorRepositoryImplTest {
     fun `If the remote data source return server error, the local data source never calls to save data`() {
         runBlocking {
             val forceRefresh = false
-            val serverError = 500
 
             whenever(localDataSource.isEconomicIndicatorListEmpty()).thenReturn(true)
             whenever(remoteDataSource.getEconomicIndicatorList()).thenReturn(
                 Result.ServerError(
-                    serverError
+                    serverErrorMock
                 )
             )
 
@@ -191,14 +175,14 @@ class EconomicIndicatorRepositoryImplTest {
         runBlocking {
 
             val forceRefresh = false
-            val economicIndicatorCode = "100"
-            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorCode)).thenReturn(
+
+            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorMock.code)).thenReturn(
                 true
             )
 
-            repository.getEconomicIndicatorDetail(economicIndicatorCode, forceRefresh)
+            repository.getEconomicIndicatorDetail(economicIndicatorMock.code, forceRefresh)
 
-            verify(remoteDataSource, times(1)).getEconomicIndicatorDetail(economicIndicatorCode)
+            verify(remoteDataSource, times(1)).getEconomicIndicatorDetail(economicIndicatorMock.code)
         }
     }
 
@@ -207,10 +191,10 @@ class EconomicIndicatorRepositoryImplTest {
         runBlocking {
 
             val forceRefresh = true
-            val economicIndicatorCode = "uf"
-            repository.getEconomicIndicatorDetail(economicIndicatorCode,forceRefresh)
 
-            verify(remoteDataSource, times(1)).getEconomicIndicatorDetail(economicIndicatorCode)
+            repository.getEconomicIndicatorDetail(economicIndicatorMock.code,forceRefresh)
+
+            verify(remoteDataSource, times(1)).getEconomicIndicatorDetail(economicIndicatorMock.code)
         }
     }
 
@@ -219,18 +203,14 @@ class EconomicIndicatorRepositoryImplTest {
         runBlocking {
 
             val forceRefresh = false
-            val economicIndicatorCode = "uf"
-            val economicIndicatorDetail = EconomicIndicatorDetail(
-                code = economicIndicatorCode,
-                serieList = emptyList()
-            )
 
-            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorCode)).thenReturn(false)
-            whenever(localDataSource.getEconomicIndicatorDetail(economicIndicatorCode)).thenReturn(economicIndicatorDetail)
+            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorMock.code)).thenReturn(false)
+            whenever(localDataSource.getEconomicIndicatorDetail(economicIndicatorMock.code)).thenReturn(
+                economicIndicatorDetailMock)
 
-            repository.getEconomicIndicatorDetail(economicIndicatorCode,forceRefresh)
+            repository.getEconomicIndicatorDetail(economicIndicatorMock.code,forceRefresh)
 
-            verify(localDataSource, times(1)).getEconomicIndicatorDetail(economicIndicatorCode)
+            verify(localDataSource, times(1)).getEconomicIndicatorDetail(economicIndicatorMock.code)
         }
     }
 
@@ -240,15 +220,15 @@ class EconomicIndicatorRepositoryImplTest {
         runBlocking {
 
             val forceRefresh = false
-            val economicIndicatorCode = "uf"
-            val errorCode = 500
-            val expected = Result.ServerError(errorCode)
 
-            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorCode)).thenReturn(true)
+            val expected = Result.ServerError(serverErrorMock)
 
-            whenever(remoteDataSource.getEconomicIndicatorDetail(economicIndicatorCode)).thenReturn(Result.ServerError(errorCode))
+            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorMock.code)).thenReturn(true)
 
-            val result = repository.getEconomicIndicatorDetail(economicIndicatorCode, forceRefresh)
+            whenever(remoteDataSource.getEconomicIndicatorDetail(economicIndicatorMock.code)).thenReturn(Result.ServerError(
+                serverErrorMock))
+
+            val result = repository.getEconomicIndicatorDetail(economicIndicatorMock.code, forceRefresh)
 
             assertEquals(expected, result)
 
@@ -260,14 +240,13 @@ class EconomicIndicatorRepositoryImplTest {
         runBlocking {
 
             val forceRefresh = false
-            val economicIndicatorCode = "uf"
             val expected = Result.ConnectionError
 
-            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorCode)).thenReturn(true)
+            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorMock.code)).thenReturn(true)
 
-            whenever(remoteDataSource.getEconomicIndicatorDetail(economicIndicatorCode)).thenReturn(Result.ConnectionError)
+            whenever(remoteDataSource.getEconomicIndicatorDetail(economicIndicatorMock.code)).thenReturn(Result.ConnectionError)
 
-            val result = repository.getEconomicIndicatorDetail(economicIndicatorCode, forceRefresh)
+            val result = repository.getEconomicIndicatorDetail(economicIndicatorMock.code, forceRefresh)
 
             assertEquals(expected, result)
 
@@ -278,14 +257,14 @@ class EconomicIndicatorRepositoryImplTest {
     fun `When the detail remote data source return serve error, the local data source never calls to save data`() {
         runBlocking {
             val forceRefresh = false
-            val economicIndicatorCode = "uf"
-            val errorCode = 500
-            val expected = Result.ServerError(errorCode)
 
-            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorCode)).thenReturn(true)
-            whenever(remoteDataSource.getEconomicIndicatorDetail(economicIndicatorCode)).thenReturn(Result.ServerError(errorCode))
+            val expected = Result.ServerError(serverErrorMock)
 
-            val result = repository.getEconomicIndicatorDetail(economicIndicatorCode,forceRefresh)
+            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorMock.code)).thenReturn(true)
+            whenever(remoteDataSource.getEconomicIndicatorDetail(economicIndicatorMock.code)).thenReturn(Result.ServerError(
+                serverErrorMock))
+
+            val result = repository.getEconomicIndicatorDetail(economicIndicatorMock.code,forceRefresh)
 
             assertEquals(expected, result)
         }
@@ -295,25 +274,20 @@ class EconomicIndicatorRepositoryImplTest {
     fun `When the detail remote data source return success then the repository should be return the same`() {
         runBlocking {
             val forceRefresh = false
-            val economicIndicatorCode = "uf"
 
-            val economicIndicatorDetail = EconomicIndicatorDetail(
-                code = economicIndicatorCode,
-                serieList = emptyList()
-            )
-            val expected = Result.Success(economicIndicatorDetail)
+            val expected = Result.Success(economicIndicatorDetailMock)
 
-            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorCode)).thenReturn(true)
+            whenever(localDataSource.isEconomicIndicatorDetailEmpty(economicIndicatorMock.code)).thenReturn(true)
 
-            whenever(remoteDataSource.getEconomicIndicatorDetail(economicIndicatorCode)).thenReturn(Result.Success(economicIndicatorDetail))
-            whenever(localDataSource.getEconomicIndicatorDetail(economicIndicatorCode)).thenReturn(economicIndicatorDetail)
+            whenever(remoteDataSource.getEconomicIndicatorDetail(economicIndicatorMock.code)).thenReturn(Result.Success(
+                economicIndicatorDetailMock))
+            whenever(localDataSource.getEconomicIndicatorDetail(economicIndicatorMock.code)).thenReturn(
+                economicIndicatorDetailMock)
 
-            val result = repository.getEconomicIndicatorDetail(economicIndicatorCode,forceRefresh)
+            val result = repository.getEconomicIndicatorDetail(economicIndicatorMock.code,forceRefresh)
 
             assertEquals(expected, result)
         }
     }
-
-
 
 }

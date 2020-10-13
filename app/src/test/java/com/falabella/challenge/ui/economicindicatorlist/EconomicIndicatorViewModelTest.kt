@@ -8,6 +8,9 @@ import com.falabella.domain.model.Result
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.challenge.ui.MainCoroutineRule
 import com.falabella.domain.usecase.GetEconomicIndicatorListUseCase
+import com.falabella.testshared.economicIndicatorListMock
+import com.falabella.testshared.economicIndicatorMock
+import com.falabella.testshared.serverErrorMock
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -47,6 +50,7 @@ class EconomicIndicatorViewModelTest{
 
         runBlocking {
             val forceRefresh = false
+
             val emptyList : Result<List<EconomicIndicator>> = Result.Success(emptyList())
 
             whenever(listUseCase.invoke(forceRefresh)).thenReturn(emptyList)
@@ -65,16 +69,8 @@ class EconomicIndicatorViewModelTest{
     {
         runBlocking {
             val forceRefresh = false
-            val utm = EconomicIndicator(
-                "utm",
-                "Unidad Tributaria Mensual (UTM)",
-                "Pesos",
-                "2020-10-01T03:00:00.000Z",
-                "50372"
-            )
-            val economicIndicatorList = listOf(utm)
 
-            val economicIndicatorResponse = Result.Success(economicIndicatorList)
+            val economicIndicatorResponse = Result.Success(economicIndicatorListMock)
 
             whenever(listUseCase.invoke(forceRefresh)).thenReturn(economicIndicatorResponse)
 
@@ -82,7 +78,7 @@ class EconomicIndicatorViewModelTest{
 
             viewModel.getEconomicIdicatorList()
 
-            verify(observer).onChanged(EconomicIndicatorViewModel.UiModel.Success(economicIndicatorList))
+            verify(observer).onChanged(EconomicIndicatorViewModel.UiModel.Success(economicIndicatorListMock))
 
         }
     }
@@ -93,8 +89,8 @@ class EconomicIndicatorViewModelTest{
 
         runBlocking {
             val forceRefresh = false
-            val serverError = 100
-            val serverErrorResponse  = Result.ServerError(serverError)
+
+            val serverErrorResponse  = Result.ServerError(serverErrorMock)
 
             whenever(listUseCase.invoke(forceRefresh)).thenReturn(serverErrorResponse)
 
@@ -112,6 +108,7 @@ class EconomicIndicatorViewModelTest{
 
         runBlocking {
             val forceRefresh = false
+
             val connectionError  = Result.ConnectionError
 
             whenever(listUseCase.invoke(forceRefresh)).thenReturn(connectionError)
