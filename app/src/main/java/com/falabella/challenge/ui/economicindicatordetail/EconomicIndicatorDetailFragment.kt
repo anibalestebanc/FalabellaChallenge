@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.falabella.challenge.R
+import com.falabella.challenge.ui.AppApplication
+import com.falabella.challenge.ui.common.BaseActivity
 import com.falabella.challenge.ui.common.BaseFragment
 import com.falabella.challenge.ui.common.ErrorViewHelper
 import com.falabella.challenge.ui.economicindicatordetail.economicindicatorserieitem.EconomicIndicatorSerieRecyclerViewAdapter
@@ -24,19 +26,26 @@ import kotlinx.android.synthetic.main.loading.*
 
 class EconomicIndicatorDetailFragment : BaseFragment() {
 
-    private val economicDetailAdapter = EconomicIndicatorSerieRecyclerViewAdapter()
+
     private val args: EconomicIndicatorDetailFragmentArgs by navArgs()
     private val  economicIndicatorCode : String by lazy { args.code }
     private val  economicIndicatorName : String by lazy { args.name }
     private val economicIndicatorValue : String by lazy { args.value }
-    private val errorViewHelper: ErrorViewHelper by lazy { initErrorViewHelper() }
-    private val viewModel: EconomicIndicatorDetailViewModel by lazy {
-        EconomicIndicatorDetailViewModel(appContainer().getEconomicIndicatorDetailUseCase(), appContainer().getCoroutineDispacher())
-    }
 
+    private lateinit var component : EconomicIndicatorDetailComponent
+
+    private val economicDetailAdapter = EconomicIndicatorSerieRecyclerViewAdapter()
+    private val errorViewHelper: ErrorViewHelper by lazy { initErrorViewHelper() }
+
+    private val viewModel: EconomicIndicatorDetailViewModel by lazy { component.viewModel }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_economic_indicator_detail, container, false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        component = appComponent().economicIndicatorDetailComponent(EconomicIndicatorDetailModule())
+        super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

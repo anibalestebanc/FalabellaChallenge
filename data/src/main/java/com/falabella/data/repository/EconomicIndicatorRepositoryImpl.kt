@@ -7,7 +7,7 @@ import com.falabella.domain.model.EconomicIndicator
 import com.falabella.domain.model.EconomicIndicatorDetail
 import com.falabella.domain.repository.EconomicIndicatorRepository
 
-class EconomicIndicatorRepositoryImpl(
+class EconomicIndicatorRepositoryImpl constructor(
     private val localDataSource: EconomicIndicatorLocalDataSource,
     private val remoteDataSource: EconomicIndicatorRemoteDataSource
 ): EconomicIndicatorRepository {

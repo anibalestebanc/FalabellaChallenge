@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.falabella.domain.model.EconomicIndicator
 import com.falabella.challenge.R
+import com.falabella.challenge.ui.AppApplication
+import com.falabella.challenge.ui.common.BaseActivity
 import com.falabella.challenge.ui.common.BaseFragment
 import com.falabella.challenge.ui.common.ErrorViewHelper
 import com.falabella.challenge.ui.economicindicatorlist.economicindicatoritem.EconomicIndicatorAdapter
@@ -19,27 +21,26 @@ import kotlinx.android.synthetic.main.connection_error.*
 import kotlinx.android.synthetic.main.default_error.*
 import kotlinx.android.synthetic.main.fragment_economic_indicator_list.*
 import kotlinx.android.synthetic.main.loading.*
-import kotlinx.coroutines.Dispatchers
 
 class EconomicIndicatorFragment : BaseFragment() {
 
 
-    private val viewModel: EconomicIndicatorViewModel by lazy {
-        EconomicIndicatorViewModel(appContainer().getEconomicIndicatorListUseCase(),appContainer().getCoroutineDispacher())
-    }
-    private val economicIndicatorAdapter = EconomicIndicatorAdapter(::onEconomicIndicatorClicked)
+    private lateinit var component: EconomicIndicatorComponent
+    private val viewModel : EconomicIndicatorViewModel by lazy { component.viewModel }
 
+    private val economicIndicatorAdapter = EconomicIndicatorAdapter(::onEconomicIndicatorClicked)
     private val errorViewHelper: ErrorViewHelper by lazy { initErrorViewHelper() }
 
     private val economicIndicatorSortedBy: EconomicIndicatorSortedByImpl by lazy {
         EconomicIndicatorSortedByImpl(economicIndicatorAdapter)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        component = appComponent().economicIndicatorComponent(EconomicIndicatorModule())
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_economic_indicator_list, container, false)
     }
 
